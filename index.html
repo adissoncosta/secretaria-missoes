@@ -1,0 +1,827 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Secretaria de Missões IDPB</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+<style>
+/* Layout: secretaria clássica — barra amarela no topo, menu lateral cinza, área de trabalho com blocos-atalho e fichas */
+:root{
+  --sun:#FDD66B; --sun-deep:#F2BE2E; --sun-ink:#3A2E06;
+  --side:#A4ABB5; --side-ink:#2B2F36; --side-hover:#959DA9;
+  --bg:#F6F5F1; --panel:#E4E7EC; --card:#FFFFFF; --fg:#24272C; --muted:#646B76; --line:#D3D7DE;
+  --ok:#2E7D4F; --ok-bg:#E2F2E8; --warn:#9A5B00; --warn-bg:#FFF0D1; --bad:#A33A2C; --bad-bg:#FBE4E0; --info:#2B5C8A; --info-bg:#E2ECF6;
+  --display:"Lexend",system-ui,sans-serif; --body:"Figtree",system-ui,sans-serif;
+  --shadow:0 3px 8px rgba(40,35,10,.16);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --sun:#E9BE45; --sun-deep:#D6A626; --sun-ink:#2A2003;
+  --side:#2C3038; --side-ink:#D9DDE3; --side-hover:#383D47;
+  --bg:#17191D; --panel:#1F2228; --card:#272B32; --fg:#E9EBEE; --muted:#A3AAB4; --line:#3A3F48;
+  --ok:#7FD3A0; --ok-bg:#1D3326; --warn:#F4C46B; --warn-bg:#3A2D12; --bad:#F0998C; --bad-bg:#3D211D; --info:#93BFEA; --info-bg:#1C2B3B;
+  --shadow:0 3px 10px rgba(0,0,0,.45); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --sun:#E9BE45; --sun-deep:#D6A626; --sun-ink:#2A2003;
+  --side:#2C3038; --side-ink:#D9DDE3; --side-hover:#383D47;
+  --bg:#17191D; --panel:#1F2228; --card:#272B32; --fg:#E9EBEE; --muted:#A3AAB4; --line:#3A3F48;
+  --ok:#7FD3A0; --ok-bg:#1D3326; --warn:#F4C46B; --warn-bg:#3A2D12; --bad:#F0998C; --bad-bg:#3D211D; --info:#93BFEA; --info-bg:#1C2B3B;
+  --shadow:0 3px 10px rgba(0,0,0,.45); color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:15px;line-height:1.5}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--sun)}
+h1,h2,h3{font-family:var(--display);font-weight:500;text-wrap:balance;margin:0}
+button{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--info);outline-offset:2px}
+.app{display:grid;grid-template-columns:270px minmax(0,1fr);min-height:100vh}
+/* sidebar */
+.side{background:var(--side);color:var(--side-ink);display:flex;flex-direction:column}
+.who{background:var(--sun);color:var(--sun-ink);display:flex;gap:12px;align-items:center;padding:18px 18px 18px max(18px,env(safe-area-inset-left,0px));min-height:76px;box-shadow:0 2px 4px rgba(0,0,0,.08)}
+.who svg{flex:none}
+.who small{display:block;font-size:13px;opacity:.8}
+.who b{font-weight:600}
+.nav{display:flex;flex-direction:column;padding:18px 10px;gap:2px;position:sticky;top:env(safe-area-inset-top,0px)}
+.nav a{display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:6px;color:inherit;text-decoration:none;font-size:16px}
+.nav a:hover{background:var(--side-hover)}
+.nav a[aria-current="page"]{background:var(--side-hover);font-weight:600}
+.nav svg{width:19px;height:19px;flex:none}
+.nav .count{margin-left:auto;font-size:12px;background:var(--sun);color:var(--sun-ink);border-radius:20px;padding:1px 8px;font-weight:600}
+/* top */
+.top{background:var(--sun);color:var(--sun-ink);display:flex;align-items:center;gap:16px;min-height:76px;padding-block:10px;padding-left:24px;padding-right:max(24px,env(safe-area-inset-right,0px));position:sticky;top:env(safe-area-inset-top,0px);z-index:20;box-shadow:0 2px 4px rgba(0,0,0,.08)}
+.burger{background:none;border:0;padding:6px;cursor:pointer;display:none}
+.top .search{flex:1;max-width:460px;margin-left:auto;position:relative}
+.top input{width:100%;padding:10px 14px 10px 38px;border-radius:8px;border:1px solid rgba(0,0,0,.15);background:rgba(255,255,255,.75);font:inherit;color:#24272C}
+.top .search svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);opacity:.6}
+.seal{width:44px;height:44px;border-radius:50%;border:2px solid var(--sun-ink);display:grid;place-items:center;font-family:var(--display);font-weight:600;font-size:11px;letter-spacing:.04em;flex:none}
+.results{position:absolute;top:calc(100% + 6px);left:0;right:0;background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:8px;box-shadow:var(--shadow);max-height:360px;overflow:auto;z-index:40}
+.results a{display:block;padding:9px 14px;color:inherit;text-decoration:none;border-bottom:1px solid var(--line)}
+.results a:hover,.results a.sel{background:var(--panel)}
+.results small{color:var(--muted)}
+main{padding-block:16px 40px;padding-left:16px;padding-right:max(16px,env(safe-area-inset-right,0px));min-width:0}
+/* panel like model */
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:4px;margin-bottom:18px}
+.panel-head{padding:20px 26px;border-bottom:1px solid var(--line);display:flex;flex-wrap:wrap;gap:14px;align-items:center}
+.panel-head h1{font-size:24px;flex:1 1 260px}
+.panel-head p{margin:2px 0 0;color:var(--muted);font-size:14px;flex-basis:100%}
+.panel-body{padding:24px 26px}
+.btn{display:inline-flex;align-items:center;gap:9px;padding:9px 18px;border:1px solid var(--line);border-radius:3px;background:var(--side);color:var(--side-ink);cursor:pointer;text-decoration:none;font-size:15px;box-shadow:inset 0 0 0 2px rgba(0,0,0,.06)}
+.btn:hover{filter:brightness(.95)}
+.btn.y{background:var(--sun);color:var(--sun-ink);border-color:var(--sun-deep)}
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:22px}
+.tile{background:var(--sun);color:var(--sun-ink);box-shadow:var(--shadow);min-height:86px;padding:16px 18px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;text-align:center;text-decoration:none;transition:transform .12s}
+.tile:hover{transform:translateY(-2px)}
+.tile span.t{text-decoration:underline;display:inline-flex;gap:8px;align-items:center;font-size:16px}
+.tile small{font-size:12.5px;opacity:.75}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;margin-bottom:18px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:4px;padding:14px 16px}
+.kpi b{display:block;font-family:var(--display);font-size:28px;font-weight:500;font-variant-numeric:tabular-nums;line-height:1.15}
+.kpi span{font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+/* filters & table */
+.filters{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:16px;align-items:end}
+.filters label{display:flex;flex-direction:column;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;gap:4px}
+.filters select,.filters input{font:inherit;font-size:14px;padding:7px 10px;border:1px solid var(--line);border-radius:4px;background:var(--card);color:var(--fg);min-width:150px;max-width:100%}
+.tbl-wrap{overflow-x:auto;background:var(--card);border:1px solid var(--line);border-radius:4px}
+table{border-collapse:collapse;width:100%;font-size:14px;font-variant-numeric:tabular-nums}
+th,td{padding:9px 12px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:600;background:var(--panel);position:sticky;top:0;cursor:pointer;user-select:none}
+th.num,td.num{text-align:right}
+tbody tr:hover{background:var(--panel)}
+td a{color:inherit;font-weight:600;text-decoration:none}
+td a:hover{text-decoration:underline}
+tfoot td{font-weight:700;background:var(--panel)}
+.pill{display:inline-block;padding:1px 9px;border-radius:20px;font-size:12.5px;font-weight:600}
+.p-ok{background:var(--ok-bg);color:var(--ok)}.p-warn{background:var(--warn-bg);color:var(--warn)}.p-bad{background:var(--bad-bg);color:var(--bad)}.p-info{background:var(--info-bg);color:var(--info)}.p-mute{background:var(--panel);color:var(--muted)}
+.bar{height:8px;background:var(--panel);border-radius:4px;min-width:60px;width:90px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--sun-deep)}
+/* profile */
+.prof{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:4px;padding:18px 20px;min-width:0}
+.card h3{font-size:13px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);font-family:var(--body);font-weight:700;margin-bottom:10px}
+dl{display:grid;grid-template-columns:150px minmax(0,1fr);gap:8px 14px;margin:0}
+dt{color:var(--muted);font-size:14px}
+dd{margin:0;font-weight:500;overflow-wrap:anywhere}
+.idhead{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+.avatar{width:72px;height:72px;border-radius:50%;background:var(--sun);color:var(--sun-ink);display:grid;place-items:center;font-family:var(--display);font-size:26px;font-weight:600;flex:none}
+.idhead h1{font-size:26px}
+.idhead .sub{color:var(--muted)}
+.copy{background:none;border:1px solid var(--line);border-radius:4px;padding:1px 8px;font-size:12px;cursor:pointer;margin-left:6px;color:var(--muted)}
+.note{background:var(--warn-bg);color:var(--warn);border-radius:4px;padding:8px 12px;font-size:14px}
+.notes{display:flex;flex-direction:column;gap:8px}
+.groups{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:18px}
+.group h2{font-size:18px}
+.group .meta{color:var(--muted);font-size:13.5px;margin:2px 0 12px}
+.group ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.group li a{display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-top:1px solid var(--line);color:inherit;text-decoration:none}
+.group li a:hover b{text-decoration:underline}
+.group li small{color:var(--muted);text-align:right}
+.toast{position:fixed;bottom:calc(20px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:9px 18px;border-radius:6px;font-size:14px;z-index:50}
+.muted{color:var(--muted)}
+.scrim{display:none}
+@media (max-width:860px){
+  .app{grid-template-columns:minmax(0,1fr)}
+  .side{position:fixed;inset:0 auto 0 0;width:min(290px,85vw);z-index:45;transform:translateX(-100%);transition:transform .2s;padding-top:env(safe-area-inset-top,0px);overflow:auto}
+  .app.open .side{transform:none}
+  .app.open .scrim{display:block;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:44}
+  .burger{display:block}
+  .top{padding-left:max(12px,env(safe-area-inset-left,0px));gap:10px}
+  main{padding-left:max(16px,env(safe-area-inset-left,0px))}
+  .prof{grid-template-columns:minmax(0,1fr)}
+  dl{grid-template-columns:120px minmax(0,1fr)}
+  .panel-head,.panel-body{padding:16px}
+  .tiles{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
+  .seal{display:none}
+}
+@media (max-width:420px){.tiles{grid-template-columns:minmax(0,1fr)}.filters label{flex:1 1 140px}.filters select{min-width:0;width:100%}}
+.modal[hidden]{display:none}
+.modal{position:fixed;inset:0;z-index:60;background:rgba(20,18,10,.45);display:flex;align-items:flex-start;justify-content:center;padding:max(24px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) max(24px,env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));overflow:auto}
+.modal-box{background:var(--card);color:var(--fg);border-radius:8px;box-shadow:0 12px 40px rgba(0,0,0,.3);width:min(820px,100%);display:flex;flex-direction:column;max-height:calc(100vh - 48px)}
+#edform{display:flex;flex-direction:column;min-height:0;max-height:inherit}
+.mhead{display:flex;gap:12px;align-items:flex-start;padding:18px 22px;background:var(--sun);color:var(--sun-ink);border-radius:8px 8px 0 0}
+.mhead small{font-size:13px;opacity:.8}.mhead h2{font-size:21px}
+.mclose{margin-left:auto;background:none;border:0;font-size:30px;line-height:1;cursor:pointer;color:inherit;padding:0 4px}
+.mbody{padding:16px 22px;overflow:auto;display:flex;flex-direction:column;gap:14px;min-height:0}
+.mbody fieldset{border:1px solid var(--line);border-radius:6px;padding:12px 14px 14px;margin:0}
+.mbody legend{font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);font-weight:700;padding:0 6px}
+.fgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 14px}
+.fld{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--muted);min-width:0}
+.fld.wide{grid-column:1/-1}
+.fld input,.fld select{font:inherit;font-size:15px;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:4px;padding:8px 10px;width:100%;min-width:0}
+.fld input:focus,.fld select:focus{border-color:var(--sun-deep);outline:2px solid var(--sun);outline-offset:0}
+.mfoot{display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:14px 22px;border-top:1px solid var(--line)}
+.err{background:var(--bad-bg);color:var(--bad);padding:8px 12px;border-radius:4px;margin:0}
+.btn.danger{background:var(--bad-bg);color:var(--bad);border-color:var(--bad)}
+.btn.ed{background:var(--card);color:var(--fg)}
+@media (max-width:600px){.fgrid{grid-template-columns:minmax(0,1fr)}.mhead,.mbody,.mfoot{padding-left:14px;padding-right:14px}.modal{padding-top:max(8px,env(safe-area-inset-top,0px))}.modal-box{max-height:calc(100vh - 16px)}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+
+/* ===== Padrão visual do Painel Financeiro: azul-marinho + dourado, cartões brancos ===== */
+:root{
+  --navy:#1B2A4A; --navy-2:#24365C; --gold:#E3A72F; --gold-soft:#F6C453; --gold-ink:#1B2A4A;
+  --bg:#F3F5F8; --panel:#FFFFFF; --card:#FFFFFF; --fg:#1B2433; --muted:#5B6576; --line:#E1E5EC; --soft:#F6F8FB;
+  --ok:#1F7A4D; --ok-bg:#E7F7EE; --info:#24365C; --info-bg:#E8EDF6;
+  --display:"Inter",system-ui,sans-serif; --body:"Inter",system-ui,sans-serif;
+  --shadow:0 1px 2px rgba(16,24,40,.05),0 1px 3px rgba(16,24,40,.06);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --navy:#16223D; --navy-2:#22335A; --gold:#E3A72F; --gold-soft:#F6C453; --gold-ink:#16223D;
+  --bg:#0E1424; --panel:#162036; --card:#162036; --fg:#E7EBF2; --muted:#9AA6BA; --line:#26324B; --soft:#1B2740;
+  --info:#A9C1EA; --info-bg:#1E2B47; --shadow:0 1px 3px rgba(0,0,0,.4)}}
+:root[data-theme="dark"]{
+  --navy:#16223D; --navy-2:#22335A; --gold:#E3A72F; --gold-soft:#F6C453; --gold-ink:#16223D;
+  --bg:#0E1424; --panel:#162036; --card:#162036; --fg:#E7EBF2; --muted:#9AA6BA; --line:#26324B; --soft:#1B2740;
+  --info:#A9C1EA; --info-bg:#1E2B47; --shadow:0 1px 3px rgba(0,0,0,.4)}
+body{font-size:15px}
+body::before{background:var(--navy)}
+h1,h2,h3{font-weight:700;letter-spacing:-.01em}
+/* cabeçalho */
+.top{background:var(--navy);color:#fff;border-bottom:3px solid var(--gold);box-shadow:none;min-height:92px;padding-block:14px;gap:18px}
+.brand{display:flex;align-items:center;gap:16px;min-width:0}
+.logo{width:56px;height:56px;border-radius:12px;background:#fff;display:grid;place-items:center;flex:none;box-shadow:0 1px 3px rgba(0,0,0,.25)}
+.eyebrow{font-size:11.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#B9C6E0}
+.ttl{font-size:22px;font-weight:800;letter-spacing:-.015em;line-height:1.2;display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px}
+.gpill{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--gold-soft);border:1.5px solid var(--gold);border-radius:99px;padding:3px 11px;white-space:nowrap}
+.top .search{max-width:380px}
+.top input{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22);color:#fff;border-radius:10px}
+.top input::placeholder{color:#C3CDE0}
+.top .search svg{color:#fff}
+.burger{color:#fff}
+.seal{display:none}
+/* menu lateral */
+.side{background:var(--card);color:var(--fg);border-right:1px solid var(--line)}
+.who{background:var(--navy);color:#fff;min-height:92px;border-bottom:3px solid var(--gold);box-shadow:none}
+.who small{color:#B9C6E0;opacity:1;font-size:11.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase}
+.who svg{color:var(--gold-soft)}
+.nav{padding:16px 12px}
+.nav a{font-size:15px;font-weight:500;border-radius:10px;color:var(--fg)}
+.nav a:hover{background:var(--soft)}
+.nav a[aria-current="page"]{background:var(--navy);color:#fff;font-weight:600}
+.nav .count{background:var(--gold);color:var(--gold-ink);font-weight:700}
+.nav a[aria-current="page"] .count{background:var(--gold-soft)}
+/* painéis e cartões */
+main{padding-block:22px 48px;padding-left:24px}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);overflow:hidden}
+.panel-head{padding:20px 24px;border-bottom:1px solid var(--line)}
+.panel-head h1{font-size:15px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--navy)}
+.panel-body{padding:22px 24px}
+.card,.kpi,.tbl-wrap{border-radius:12px;box-shadow:var(--shadow)}
+.card h3{color:var(--navy);font-weight:800;letter-spacing:.08em}
+.kpi{border-top:3px solid var(--gold)}
+.kpi b{font-weight:800;color:var(--navy)}
+.kpi span{font-weight:700;letter-spacing:.08em;font-size:12px}
+/* botões */
+.btn{background:var(--card);color:var(--fg);border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow);font-weight:600;padding:10px 18px}
+.btn:hover{filter:none;border-color:var(--navy-2)}
+.btn.y{background:var(--navy);color:#fff;border-color:var(--navy)}
+.btn.y:hover{background:var(--navy-2)}
+.btn.ed{background:var(--card);color:var(--fg)}
+/* blocos-atalho */
+.tiles{gap:16px}
+.tile{background:var(--card);color:var(--fg);border:1px solid var(--line);border-left:4px solid var(--gold);border-radius:12px;box-shadow:var(--shadow);align-items:flex-start;text-align:left;padding:18px 20px;min-height:96px}
+.tile:hover{transform:translateY(-2px);border-color:var(--navy-2);border-left-color:var(--gold)}
+.tile span.t{text-decoration:none;font-weight:700;font-size:16px;color:var(--navy)}
+.tile span.t svg{color:var(--gold)}
+.tile small{color:var(--muted);opacity:1;font-size:13px}
+/* tabelas e filtros */
+th{background:var(--soft);color:var(--muted);font-weight:700;letter-spacing:.07em}
+tbody tr:hover{background:var(--soft)}
+tfoot td{background:var(--soft)}
+.filters label{font-weight:700;letter-spacing:.08em}
+.filters select,.filters input{border-radius:10px;padding:9px 12px;background:var(--card)}
+.bar{background:var(--soft)}
+.bar i{background:var(--gold)}
+.avatar{background:var(--navy);color:var(--gold-soft)}
+.idhead h1{font-weight:800;color:var(--navy)}
+.results a:hover,.results a.sel{background:var(--soft)}
+/* janela de edição */
+.mhead{background:var(--navy);color:#fff;border-bottom:3px solid var(--gold);border-radius:12px 12px 0 0}
+.mhead small{color:#B9C6E0;opacity:1}
+.modal-box{border-radius:12px}
+.fld input,.fld select{border-radius:8px;background:var(--soft)}
+.fld input:focus,.fld select:focus{border-color:var(--navy-2);outline:2px solid var(--gold-soft)}
+.toast{background:var(--navy);color:#fff}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .tile span.t,:root:not([data-theme="light"]) .panel-head h1,:root:not([data-theme="light"]) .card h3,:root:not([data-theme="light"]) .kpi b,:root:not([data-theme="light"]) .idhead h1{color:#E7EBF2}}
+:root[data-theme="dark"] .tile span.t,:root[data-theme="dark"] .panel-head h1,:root[data-theme="dark"] .card h3,:root[data-theme="dark"] .kpi b,:root[data-theme="dark"] .idhead h1{color:#E7EBF2}
+@media (max-width:860px){.top{min-height:72px}.ttl{font-size:17px}.eyebrow{font-size:10px}.logo{width:44px;height:44px}.top .search{flex-basis:100%;max-width:none;order:3}.top{flex-wrap:wrap}main{padding-left:max(16px,env(safe-area-inset-left,0px))}}
+@media (max-width:520px){.gpill,.eyebrow{display:none}}
+body{margin:0}
+.idhead h1{font-size:24px;text-transform:none;letter-spacing:-.015em;flex:initial}
+@media (max-width:860px){.brand{flex:1 1 0;gap:10px}.kpis{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.kpi b{font-size:24px}}
+.logo{width:60px;height:68px}.logo img{width:auto;height:58px;display:block}
+@media (max-width:860px){.logo{width:42px;height:50px}.logo img{height:42px}}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <aside class="side" id="side" aria-label="Menu">
+    <div class="who">
+      <svg width="46" height="46" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm0 4a3.5 3.5 0 1 1 0 7 3.5 3.5 0 0 1 0-7Zm0 14a8 8 0 0 1-6.2-2.9c.9-1.9 3.5-3.1 6.2-3.1s5.3 1.2 6.2 3.1A8 8 0 0 1 12 20Z"/></svg>
+      <div><small>Menu</small><b>Secretaria de Missões</b></div>
+    </div>
+    <nav class="nav" id="nav"></nav>
+  </aside>
+  <div class="scrim" id="scrim"></div>
+  <div style="min-width:0">
+    <header class="top">
+      <button class="burger" id="burger" aria-label="Abrir menu"><svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor"><path d="M3 5h18v2.6H3zM3 10.7h18v2.6H3zM3 16.4h18V19H3z"/></svg></button>
+      <div class="brand"><div class="logo"><img src="data:image/webp;base64,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" alt="Logo IDPB" width="38" height="61"></div><div><div class="eyebrow">IDPB · Igreja de Deus Pentecostal do Brasil</div><div class="ttl">Secretaria — Ministério de Missões <span class="gpill">Cadastro de pastores</span></div></div></div>
+      <div class="search">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
+        <input id="q" type="search" placeholder="Buscar pastor, missionário, igreja ou cidade…" autocomplete="off" aria-label="Buscar">
+        <div class="results" id="results" hidden></div>
+      </div>
+      <div class="seal" title="Ministério de Missões">IDPB</div>
+    </header>
+    <main id="main"></main>
+  </div>
+</div>
+<div class="toast" id="toast" hidden></div>
+<div class="modal" id="modal" hidden><div class="modal-box" id="modal-box" role="dialog" aria-modal="true" aria-labelledby="modal-title"></div></div>
+<script>
+const RAW0 = {"P": [{"id": 1, "nome": "Leandro Augusto Santos Bernardino da Silva", "igreja": "IDPB Brasília", "cidade": "Brasília", "estado": "DF", "pais": "Brasil", "regiao": "Região Oeste", "supervisor": "Pr. José Roberto", "membros": 30, "lideres": 2, "cnpj": "18.255.603/0001-08", "cnpjNota": null, "inicio": "2009-03-09", "obra": "Não", "imovel": "Próprio", "terreno": "Não", "terrenoDet": "", "notas": ["Cônjuge sem cadastro próprio: Milka Kavicki Bernardino da Silva"], "resp": "2026-09-23T13:08", "nac": {"jurMM": true, "matricula": "2022.05.2037", "nome": "Leandro Augusto Santos Bernardino da Silva", "grau": "Ministro Auxiliar", "funcao": "Missionário", "funcaoLocal": "Presidente Igreja Local", "igrejaCad": "IDPB Brasilia", "jurisdicao": "Distrito Federal", "inclusao": "2022-06-22", "sexo": "Masculino", "estadoCivil": "Casado(a)", "nacionalidade": "Brasileira", "cidade": "Brasília", "uf": "DF", "conjuge": "Milka Kavicki Bernardino da Silva", "grauConj": "", "funcaoConj": "Cônjuge"}, "conj": {"nome": "Milka Kavicki Bernardino da Silva", "grau": "", "funcao": "Cônjuge", "sexo": "Feminino", "matricula": "", "estadoCivil": "Casado(a)", "fonte": "Ficha do cônjuge no Banco Nacional (sem cadastro próprio)", "proprio": 0, "cidade": "Brasília", "uf": "DF"}}, {"id": 2, "nome": "Lelis Alberto Pinto de Lima", "igreja": "IDPB Rio de Janeiro", "cidade": "Rio de Janeiro", "estado": "RJ", "pais": "Brasil", "regiao": "Região Sudeste", "supervisor": "Pr. João Carlos", "membros": 83, "lideres": 10, "cnpj": "51.073.840/0001-15", "cnpjNota": null, "inicio": "2010-03-01", "obra": "Não", "imovel": "Próprio", "terreno": "Não", "terrenoDet": "", "notas": [], "resp": "2026-09-23T13:11", "nac": {"jurMM": true, "matricula": "2008.11.0263", "nome": "Lelis Alberto Pinto de Lima", "grau": "Ministro Licenciado", "funcao": "Pastor", "funcaoLocal": "Presidente Igreja Local", "igrejaCad": "Santa Cruz", "jurisdicao": "Estado do Rio de Janeiro", "inclusao": "2008-10-01", "sexo": "Masculino", "estadoCivil": "Casado(a)", "nacionalidade": "Brasileira", "cidade": "Rio de Janeiro", "uf": "RJ", "conjuge": "Elyjane Paula de Lima", "grauConj": "Ministro Licenciado", "funcaoConj": "Pastora"}, "conj": {"jurMM": true, "matricula": "2008.11.0254", "nome": "Elyjane Paula de Lima", "grau": "Ministro Licenciado", "funcao": "Pastora", "funcaoLocal": "Pastor(a) Auxiliar", "igrejaCad": "", "jurisdicao": "Estado do Rio de Janeiro", "inclusao": "2008-10-01", "sexo": "Feminino", "estadoCivil": "Casado(a)", "nacionalidade": "Brasileira", "cidade": "Rio de Janeiro", "uf": "RJ", "conjuge": "Lelis Lima", "grauConj": "Ministro Cooperador", "funcaoConj": "Pastor", "fonte": "Banco de Dados Nacional (MM)", "proprio": 1, "form2025": ["e-mail"]}}, {"id": 3, "nome": "Sérgio Costa da Silva", "igreja": "IDPB Esteio", "cidade": "Esteio", "estado": "RS", "pais": "Brasil", "regiao": "Região Sul", "supervisor": "Pr. Elias Torres", "membros": 35, "lideres": 4, "cnpj": null, "cnpjNota": "Não possui", "inicio": "2017-03-15", "obra": "Não", "imovel": "Alugado", "terreno": "Não", "terrenoDet": "", "notas": [], "resp": "2026-09-23T13:12", "nac": {"jurMM": true, "matricula": "2019.10.0584", "nome": "Sérgio Costa da Silva", "grau": "Ministro Cooperador", "funcao": "Pastor", "funcaoLocal": "Presidente Igreja Local", "igrejaCad": "IDPB Esteio", "jurisdicao": "Rio Grande do Sul", "inclusao": "2017-03-09", "sexo": "Masculino", "estadoCivil": "Casado(a)", "nacionalidade": "Brasileira", "cidade": "Esteio", "uf": "RS", "conjuge": "Vânia Lúcia Maciel Costa", "grauConj": "Ministro Auxiliar", "funcaoConj": ""}, "conj": {"jurMM": true, "matricula": "2019.10.0585", "nome": "Vânia Lúcia Maciel Costa", "grau": "Ministro Cooperador", "funcao": "Pastora", "funcaoLocal": "Pastor(a) Auxiliar", "igrejaCad": "Esteio", "jurisdicao": "Rio Grande do Sul", "inclusao": "2017-03-09", "sexo": "Feminino", "estadoCivil": "Casado(a)", "nacionalidade": "Brasileira", "cidade": "Esteio", "uf": "RS", "conjuge": "Sérgio Costa da Silva", "grauConj": "Ministro Cooperador", "funcaoConj": "", "fonte": "Banco de Dados Nacional (MM)", "proprio": 1}, "aux": [{"jurMM": true, "matricula": "2014.01.2001", "nome": "Maria das Graças Holanda Montefusco", "grau": "Ministro Auxiliar", "funcao": "Missionária", "funcaoLocal": "Ministro Auxiliar", "igrejaCad": "", "jurisdicao": "Estado do Rio Grande do Sul", "inclusao": "2014-12-30", "sexo": "Feminino", "estadoCivil": "Solteiro(a)", "nacionalidade": "Brasileira", "cidade": "Esteio", "uf": "RS", "conjuge": "", "grauConj": "", "funcaoConj": "Pastor", "conjRec": null, "dica": "Ministra auxiliar na igreja de Esteio (Pr. Sérgio Costa da Silva)", "id": "n2014012001", "host": 3}]}, {"id": 4, "nome": "Sidney Pinto da Silva", "igreja": "IDPB São Luís", "cidade": "São Luís", "estado": "MA", "pais": "Brasil", "regiao": "Região Nordeste 01", "supervisor": "Pr. Silvano", "membros": 89, "lideres": 14, "cnpj": "24.911.127/0001-20", "cnpjNota": null, "inicio": "2009-02-07", "obra": "Sim", "imovel": "Próprio", "terreno": "Não", "terrenoDet": "", "notas": [], "resp": "2026-09-23T13:21", "nac": {"jurMM": true, "matricula": "2013.11.0439", "nome": "Sidney Pinto da Silva", "grau": "Ministro Ordenado", "funcao": "Pastor", "funcaoLocal": "Presidente Igreja Local", "igrejaCad": "IDPB São Luis", "jurisdicao": "Maranhão", "inclusao": "2013-12-05", "sexo": "Masculino", "estadoCivil": "Casado(a)", "nacionalidade": "Brasileira", "cidade": "São Luís", "uf": "MA", "conjuge": "Telma Gaspar da Silva", "grauConj": "Cônjuge", "funcaoConj": "", "form2025": ["celular"]}, "conj": {"jurMM": true, "matricula": "2013.11.0439C", "nome": "Telma Gaspar da Silva", "grau": "Cônjuge", "funcao": "Pastora", "funcaoLocal": "Cônjuge", "igrejaCad": "", "jurisdicao": "Maranhão", "inclusao": "2013-12-05", "sexo": "Feminino", "estadoCivil": "Casado(a)", "nacionalidade": "Brasileira", "cidade": "São Luís", "uf": "MA", "conjuge": "Sidney Pinto da Silva", "grauConj": "Ministro Licenciado", "funcaoConj": "", "fonte": "Banco de Dados Nacional (MM)", "proprio": 1}}, {"id": 5, "nome": "Gleyson Rodrigo Aguiar Santos", "igreja": "IDPB Forquilhinha", "cidade": "Criciúma", "estado": "SC", "pais": "Brasil", "regiao": "Região Sul", "supervisor": "Pr. Elias Torres", "membros": 30, "lideres": 2, "cnpj": "37.814.433/0001-90", "cnpjNota": null, "inicio": "2023-07-23", "obra": "Não", "imovel": "Alugado", "terreno": "Não", "terrenoDet": "", "notas": ["CNPJ igual ao de Walcione Dias Goes", "Não encontrado no Cadastro Nacional"], "resp": "2026-09-23T13:24", "nac": null, "conj": null}, {"id": 6, "nome": "Odilon de Freitas Bezerra", "igreja": "IDPB Paratinga", "cidade": "Paratinga", "estado": "BA", "pais": "Brasil", "regiao": "Região Nordeste 03", "supervisor": "Pr. Francisco José", "membros": 172, "lideres": 15, "cnpj": "57.374.257/0001-20", "cnpjNota": null, "inicio": "1975-09-12", "obra": "Sim", "imovel": "Próprio", "terreno": "Não", "terrenoDet": "", "notas": ["Jurisdição no Cadastro Nacional: Estado do Amazonas (não está no Ministério de Missões)", "Endereço do cadastro (rua e CEP) ainda é de Manaus/AM; a cidade foi atualizada para Paratinga/BA", "Auxiliar sem Cadastro Nacional: Melquisedeque Viana Lira"], "resp": "2026-09-23T13:31", "nac": {"jurMM": false, "matricula": "2013.11.0448", "nome": "Odilon de Freitas Bezerra", "grau": "Ministro Cooperador", "funcao": "Pastor", "funcaoLocal": "Presidente Igreja Local", "igrejaCad": "IDPB Gileatos", "jurisdicao": "Estado do Amazonas", "inclusao": "2013-12-05", "sexo": "Masculino", "estadoCivil": "Casado(a)", "nacionalidade": "Brasileira", "cidade": "Paratinga", "uf": "BA", "conjuge": "Vanessa Soares Bezerra", "grauConj": "Cônjuge", "funcaoConj": "", "fonte": "Banco de Dados Nacional completo", "id": "n2013110448", "cidadeAnt": "Manaus/AM"}, "conj": {"jurMM": false, "matricula": "2019.11.0607", "nome": "Vanessa Soares Bezerra", "grau": "Ministro Cooperador", "funcao": "Pastora", "funcaoLocal": "Pastor(a) Auxiliar", "igrejaCad": "IDPB Gileatos", "jurisdicao": "Estado do Amazonas", "inclusao": "2013-12-05", "sexo": "Feminino", "estadoCivil": "Casado(a)", "nacionalidade": "Brasileira", "cidade": "Paratinga", "uf": "BA", "conjuge": "Odilon de Freitas Bezerra", "grauConj": "Ministro Cooperador", "funcaoConj": "Pastor", "cidadeAnt": "Manaus/AM", "fonte": "Banco de Dados Nacional completo", "proprio": 1}, "aux": [{"nome": "Melquisedeque Viana Lira", "sexo": "Masculino", "matricula": "", "grau": "Estagiário", "funcao": "", "cidade": "Paratinga", "uf": "BA", "estadoCivil": "Casado(a)", "fonte": "Relatório 2026.1 (sem cadastro no Banco Nacional)", "proprio": 0, "conjRec": {"nome": "Sayonara de Souza Alves Lira", "sexo": "Feminino", "matricula": "", "grau": "", "funcao": "", "cidade": "Paratinga", "uf": "BA", "estadoCivil": "Casado(a)", "fonte": "Atualização Cadastral 2025 (nome informado pelo cônjuge)", "proprio": 0}, "form2025": ["CPF", "RG", "celular", "cônjuge", "endereço", "estado civil", "grau", "nascimento", "naturalidade"]}], "respPor": "Melquisedeque Viana Lira"}, {"id": 7, "nome": "Hériko Ferreira da Gama", "igreja": "IDPB Aracaju", "cidade": "Aracaju", "estado": "SE", "pais": "Brasil", "regiao": "Região Nordeste 03", "supervisor": "Pr. Francisco José", "membros": 23, "lideres": 4, "cnpj": null, "cnpjNota": "Não possui", "inicio": "2011-03-22", "obra": "Sim", "imovel": "Próprio", "terreno": "Não", "terrenoDet": "", "notas": [], "resp": "2026-09-23T13:32", "nac": {"jurMM": true, "matricula": "2020.07.0473", "nome": "Hériko Ferreira da Gama", "grau": "Ministro Cooperador", "funcao": "Pastor", "funcaoLocal": "Presidente Igreja Local", "igrejaCad": "IDPB Aracaju", "jurisdicao": "Estado do Sergipe", "inclusao": "2014-01-01", "sexo": "Masculino", "estadoCivil": "Casado(a)", "nacionalidade": "Brasileiro", "cidade": "Aracaju", "uf": "SE", "conjuge": "Priscila Mustafa Pinto Gama", "grauConj": "Ministro Cooperador", "funcaoConj": ""}, "conj": {"jurMM": true, "matricula": "2020.07.0474", "nome": "Priscila Mustafa Pinto Gama", "grau": "Ministro Cooperador", "funcao": "Missionário", "funcaoLocal": "Pastor(a) Auxiliar", "igrejaCad": "IDPB Aracaju", "jurisdicao": "Estado do Sergipe", "inclusao": "2014-01-01", "sexo": "Feminino", "estadoCivil": "Casado(a)", "nacionalidade": "", "cidade": "Aracaju", "uf": "SE", "conjuge": "Hériko Ferreira da Gama", "grauConj": "Ministro Cooperador", "funcaoConj": "Missionário", "fonte": "Banco de Dados Nacional (MM)", "proprio": 1, "form2025": ["nascimento", "naturalidade"]}, "emailDTR": "[dado removido]"}, {"id": 8, "nome": "José Roberto Dirane Barbosa", "igreja": "IDPB Campo Grande", "cidade": "Campo Grande", "estado": "MS", "pais": "Brasil", "regiao": "Região Oeste", "supervisor": "Pr. José Roberto", "membros": 36, "lideres": 4, "cnpj": null, "cnpjNota": "Não possui", "inicio": "2019-01-01", "obra": "Em preparação", "imovel": "Próprio", "terreno": "Sim", "terrenoDet": "", "notas": [], "resp": "2026-09-23T13:36", "nac": {"jurMM": true, "matricula": "2001.03.0127", "nome": "José Roberto Dirane Barbosa", "grau": "Ministro Ordenado", "funcao": "Pastor", "funcaoLocal": "Presidente Igreja Local", "igrejaCad": "Campo Grande", "jurisdicao": "Estado Mato Grosso do Sul", "inclusao": "2001-03-01", "sexo": "Masculino", "estadoCivil": "Casado(a)", "nacionalidade": "Brasileira", "cidade": "Campo Grande", "uf": "MS", "conjuge": "Jucilene Batista Campos Barbosa", "grauConj": "Ministro Ordenado", "funcaoConj": "Pastora"}, "conj": {"jurMM": true, "matricula": "2007.11.0238", "nome": "Jucilene Batista Campos Barbosa", "grau": "Ministro Ordenado", "funcao": "Pastora", "funcaoLocal": "Pastor(a) Auxiliar", "igrejaCad": "Campo Grande", "jurisdicao": "Estado Mato Grosso do Sul", "inclusao": "2007-11-01", "sexo": "Feminino", "estadoCivil": "Casado(a)", "nacionalidade": "Brasileira", "cidade": "Campo Grande", "uf": "MS", "conjuge": "José Roberto Dirane Barbosa", "grauConj": "Ministro Ordenado", "funcaoConj": "Pastor", "fonte": "Banco de Dados Nacional (MM)", "proprio": 1, "form2025": ["celular"]}}, {"id": 9, "nome": "Raiso de Lima Barbosa", "igreja": "IDPB Colômbia", "cidade": "Letícia", "estado": "Amazonas", "pais": "Colômbia", "regiao": "Internacional", "supervisor": "Pr. Janderson Souza", "membros": 36, "lideres": 1, "cnpj": null, "cnpjNota": "Não possui", "inicio": "2024-11-23", "obra": "Não", "imovel": "Alugado", "terreno": "Não", "terrenoDet": "", "notas": ["Não encontrado no Cadastro Nacional"], "resp": "2026-09-23T13:57", "nac": null, "conj": {"nome": "Natally Monteiro Fonseca Barbosa", "sexo": "Feminino", "matricula": "", "grau": "", "funcao": "", "cidade": "Letícia", "uf": "Colômbia", "estadoCivil": "", "fonte": "Questionário DTR (sem cadastro no Banco Nacional)", "proprio": 0, "dtrNota": "Vinculado(a) pelo e-mail em comum no questionário DTR"}}, {"id": 10, "nome": "Raimunda do Socorro da Luz Oliveira", "igreja": "IDPB Argentina", "cidade": "San Miguel de Tucumán", "estado": "Tucumán", "pais": "Argentina", "regiao": "Internacional", "supervisor": "Pr. Janderson Souza", "membros": 80, "lideres": 6, "cnpj": null, "cnpjNota": "Não possui", "inicio": "2016-03-10", "obra": "Sim", "imovel": "Alugado", "terreno": "Não", "terrenoDet": "", "notas": ["Cônjuge sem cadastro próprio: Sebastião Pedro Bezerra de Oliveira"], "resp": "2026-09-23T14:01", "nac": {"jurMM": true, "matricula": "2019.10.0589", "nome": "Raimunda do Socorro da Luz Oliveira", "grau": "Ministro Cooperador", "funcao": "Missionária", "funcaoLocal": "Pastor(a) Auxiliar", "igrejaCad": "Argentina", "jurisdicao": "Internacional – Argentina", "inclusao": "2016-02-22", "sexo": "Feminino", "estadoCivil": "Viúvo(a)", "nacionalidade": "Brasileira", "cidade": "San Miguel de Tucumán", "uf": "Argentina", "conjuge": "Sebastião Pedro Bezerra de Oliveira", "grauConj": "Ministro Cooperador", "funcaoConj": "", "obsFalec": "Cônjuge falecido: Pr. Sebastião Pedro Bezerra de Oliveira"}, "conj": null}, {"id": 11, "nome": "Elias da Silva Parente", "igreja": "IDPB Teresina", "cidade": "Teresina", "estado": "PI", "pais": "Brasil", "regiao": "Região Nordeste 01", "supervisor": "Pr. Silvano", "membros": 11, "lideres": 1, "cnpj": "14.101.350/0001-59", "cnpjNota": null, "inicio": "2008-12-16", "obra": "Sim", "imovel": "Alugado", "terreno": "Sim", "terrenoDet": "foi comprado um lote e ja estamos iniciando uma obra no local.", "notas": ["CNPJ igual ao de Manoel Vitor da Silva"], "resp": "2026-09-23T14:01", "nac": {"jurMM": true, "matricula": "2024.03.0670", "nome": "Elias da Silva Parente", "grau": "Ministro Cooperador", "funcao": "Pastor", "funcaoLocal": "", "igrejaCad": "IDPB Teresina", "jurisdicao": "Estado do Piauí", "inclusao": "2024-03-03", "sexo": "Masculino", "estadoCivil": "Casado(a)", "nacionalidade": "Brasileira", "cidade": "Teresina", "uf": "PI", "conjuge": "Celciane Vieira da Costa Parente", "grauConj": "Cônjuge", "funcaoConj": "Cônjuge"}, "conj": {"jurMM": true, "matricula": "2024.03.0670C", "nome": "Celciane Vieira da Costa Parente", "grau": "Cônjuge", "funcao": "", "funcaoLocal": "", "igrejaCad": "IDPB Teresina", "jurisdicao": "Estado do Piauí", "inclusao": "2024-03-24", "sexo": "Feminino", "estadoCivil": "Casado(a)", "nacionalidade": "Brasileira", "cidade": "Teresina", "uf": "PI", "conjuge": "Elias da Silva Parente", "grauConj": "Ministro Cooperador", "funcaoConj": "Pastor", "fonte": "Banco de Dados Nacional (MM)", "proprio": 1, "form2025": ["celular"]}, "emailDTR": "[dado removido]"}, {"id": 12, "nome": "Hudson Bezerra Fernandes", "igreja": "IDPB Recife", "cidade": "Jaboatão dos Guararapes", "estado": "PE", "pais": "Brasil", "regiao": "Região Nordeste 02", "supervisor": "Pr. Hudson Fernandes", "membros": 45, "lideres": 8, "cnpj": null, "cnpjNota": "Não possui", "inicio": "2017-08-10", "obra": "Sim", "imovel": "Próprio", "terreno": "Não", "terrenoDet": "", "notas": [], "resp": "2026-09-23T14:02", "nac": {"jurMM": true, "matricula": "2016.12.0543", "nome": "Hudson Bezerra Fernandes", "grau": "Ministro Cooperador", "funcao": "Pastor", "funcaoLocal": "Presidente Igreja Local", "igrejaCad": "IDPB Recife", "jurisdicao": "Estado de Pernambuco", "inclusao": "2016-12-31", "sexo": "Masculino", "estadoCivil": "Casado(a)", "nacionalidade": "Brasileira", "cidade": "Jaboatão dos Guararapes", "uf": "PE", "conjuge": "Watuzi Cabral Fernandes", "grauConj": "Cônjuge", "funcaoConj": "Cônjuge"}, "conj": {"jurMM": true, "matricula": "2016.12.0543C", "nome": "Watuzi Cabral Fernandes", "grau": "Cônjuge", "funcao": "Pastora", "funcaoLocal": "Cônjuge", "igrejaCad": "IDPB Recife", "jurisdicao": "Estado de Pernambuco", "inclusao": "2016-12-31", "sexo": "Feminino", "estadoCivil": "Casado(a)", "nacionalidade": "Brasileira", "cidade": "Jaboatão dos Guararapes", "uf": "PE", "conjuge": "Hudson Bezerra Fernandes", "grauConj": "", "funcaoConj": "", "fonte": "Banco de Dados Nacional (MM)", "proprio": 1}}, {"id": 13, "nome": "Mozar Correa Lima Filho", "igreja": "IDPB João Pessoa", "cidade": "João Pessoa", "estado": "PB", "pais": "Brasil", "regiao": "Região Nordeste 02", "supervisor": "Pr. Hudson Fernandes", "membros": 78, "lideres": 14, "cnpj": null, "cnpjNota": "Não possui", "inicio": "2020-06-15", "obra": "Sim", "imovel": "Próprio", "terreno": "Não", "terrenoDet": "", "notas": ["Jurisdição no Cadastro Nacional: Estado do Amazonas (não está no Ministério de Missões)"], "resp": "2026-09-23T14:12", "nac": {"jurMM": false, "matricula": "2015.12.0520", "nome": "Mozar Correa Lima Filho", "grau": "Ministro Cooperador", "funcao": "Pastor", "funcaoLocal": "Presidente Igreja Local", "igrejaCad": "Ide", "jurisdicao": "Estado do Amazonas", "inclusao": "2015-12-31", "sexo": "Masculino", "estadoCivil": "Casado(a)", "nacionalidade": "Brasileira", "cidade": "João Pessoa", "uf": "PB", "conjuge": "Miracélia Pinheiro Lima", "grauConj": "", "funcaoConj": "", "fonte": "Banco de Dados Nacional completo"}, "conj": {"jurMM": false, "matricula": "2020.11.0620", "nome": "Miracélia Alves Pinheiro", "grau": "Ministro Cooperador", "funcao": "Pastora", "funcaoLocal": "Pastor(a) Auxiliar", "igrejaCad": "IDPB Ide", "jurisdicao": "Estado do Amazonas", "inclusao": "2018-09-11", "sexo": "Feminino", "estadoCivil": "Casado(a)", "nacionalidade": "Brasileira", "cidade": "João Pessoa", "uf": "PB", "conjuge": "Mozar Correa Lima Filho", "grauConj": "Ministro Cooperador", "funcaoConj": "", "fonte": "Banco de Dados Nacional completo", "proprio": 1, "nomeAlt": "Miracélia Pinheiro Lima"}, "aux": [{"jurMM": true, "matricula": "2022.05.2033", "nome": "James da Costa Araújo", "grau": "Ministro Auxiliar", "funcao": "Missionário", "funcaoLocal": "Ministro Auxiliar", "igrejaCad": "IDPB João Pessoa", "jurisdicao": "Estado da Paraíba", "inclusao": "2022-05-09", "sexo": "Masculino", "estadoCivil": "Casado(a)", "nacionalidade": "Brasileira", "cidade": "João Pessoa", "uf": "PB", "conjuge": "Izanete Balieiro Araújo", "grauConj": "Ministro Auxiliar", "funcaoConj": "Missionária", "conjRec": {"jurMM": true, "matricula": "2022.05.2034", "nome": "Izanete Balieiro Araújo", "grau": "Ministro Auxiliar", "funcao": "Missionária", "funcaoLocal": "Ministro Auxiliar", "igrejaCad": "IDPB João Pessoa", "jurisdicao": "Estado da Paraíba", "inclusao": "2022-05-09", "sexo": "Feminino", "estadoCivil": "Casado(a)", "nacionalidade": "Brasileira", "cidade": "João Pessoa", "uf": "PB", "conjuge": "James da Costa Araújo", "grauConj": "Ministro Auxiliar", "funcaoConj": "Missionário"}, "dica": "A IDPB João Pessoa aparece no relatório com Mozar Correa Lima Filho", "id": "n2022052033", "host": 13}]}, {"id": 14, "nome": "Hugo Herlin Alborta Escolante Filho", "igreja": "IDPB Chile", "cidade": "Talagante", "estado": "Región Metropolitana", "pais": "Chile", "regiao": "Internacional", "supervisor": "Pr. Janderson Souza", "membros": 37, "lideres": 4, "cnpj": null, "cnpjNota": "Não possui", "inicio": "2012-02-26", "obra": "Não", "imovel": "Alugado", "terreno": "Não", "terrenoDet": "", "notas": [], "resp": "2026-09-23T14:22", "nac": {"jurMM": true, "matricula": "2014.01.0457", "nome": "Hugo Herlin Alborta Escolante Filho", "grau": "Ministro Cooperador", "funcao": "Pastor", "funcaoLocal": "Presidente Igreja Local", "igrejaCad": "Chile", "jurisdicao": "Internacional – Chile", "inclusao": null, "sexo": "Masculino", "estadoCivil": "Casado(a)", "nacionalidade": "Brasileira", "cidade": "Talagante", "uf": "Chile", "conjuge": "Glenda Cabral Gomes Alborta", "grauConj": "Ministro Cooperador", "funcaoConj": "Pastora", "cidadeAnt": "Santiago/Chile", "form2025": ["celular"]}, "conj": {"jurMM": true, "matricula": "2014.01.0458", "nome": "Glenda Cabral Gomes Alborta", "grau": "Ministro Cooperador", "funcao": "Pastora", "funcaoLocal": "Pastor(a) Auxiliar", "igrejaCad": "Chile", "jurisdicao": "Internacional – Chile", "inclusao": null, "sexo": "Feminino", "estadoCivil": "Casado(a)", "nacionalidade": "Brasileira", "cidade": "Talagante", "uf": "Chile", "conjuge": "Hugo Herlin Alborta Escolante Filho", "grauConj": "Ministro Cooperador", "funcaoConj": "", "fonte": "Banco de Dados Nacional (MM)", "proprio": 1, "cidadeAnt": "Santiago/Chile"}}, {"id": 15, "nome": "Ednei do Vale Coelho", "igreja": "IDPB Palmas", "cidade": "Palmas", "estado": "TO", "pais": "Brasil", "regiao": "Região Oeste", "supervisor": "Pr. José Roberto", "membros": 73, "lideres": 6, "cnpj": "27.792.955/0001-85", "cnpjNota": null, "inicio": "2010-09-19", "obra": "Sim", "imovel": "Próprio", "terreno": "Não", "terrenoDet": "", "notas": [], "resp": "2026-09-23T14:23", "nac": {"jurMM": true, "matricula": "2018.10.0466", "nome": "Ednei do Vale Coelho", "grau": "Ministro Licenciado", "funcao": "Pastor", "funcaoLocal": "Presidente Igreja Local", "igrejaCad": "IDPB Palmas", "jurisdicao": "Tocantins", "inclusao": "2014-02-01", "sexo": "Masculino", "estadoCivil": "Casado(a)", "nacionalidade": "Brasileira", "cidade": "Palmas", "uf": "TO", "conjuge": "Hosana Cardoso Coelho", "grauConj": "Ministro Cooperador", "funcaoConj": "Pastora", "form2025": ["celular"]}, "conj": {"jurMM": true, "matricula": "2014.01.0467", "nome": "Hosana Cardoso Coelho", "grau": "Ministro Licenciado", "funcao": "Pastora", "funcaoLocal": "Pastor(a) Auxiliar", "igrejaCad": "IDPB Palmas", "jurisdicao": "Tocantins", "inclusao": "2014-01-02", "sexo": "Feminino", "estadoCivil": "Casado(a)", "nacionalidade": "Brasileira", "cidade": "Palmas", "uf": "TO", "conjuge": "Ednei do Vale Coelho", "grauConj": "Ministro Cooperador", "funcaoConj": "Pastor", "fonte": "Banco de Dados Nacional (MM)", "proprio": 1}}, {"id": 16, "nome": "Walcione Dias Goes", "igreja": "IDPB Palhoça", "cidade": "Palhoça", "estado": "SC", "pais": "Brasil", "regiao": "Região Sul", "supervisor": "Pr. Elias Torres", "membros": 101, "lideres": 10, "cnpj": "37.814.433/0001-90", "cnpjNota": null, "inicio": "2012-07-04", "obra": "Sim", "imovel": "Próprio", "terreno": "Não", "terrenoDet": "", "notas": ["CNPJ igual ao de Gleyson Rodrigo Aguiar Santos"], "resp": "2026-09-23T14:24", "nac": {"jurMM": true, "matricula": "2010.11.0315", "nome": "Walcione Dias Goes", "grau": "Ministro Licenciado", "funcao": "Pastor", "funcaoLocal": "Presidente Igreja Local", "igrejaCad": "IDPB - Palhoça", "jurisdicao": "Santa Catarina", "inclusao": "2010-11-01", "sexo": "Masculino", "estadoCivil": "Casado(a)", "nacionalidade": "Brasileira", "cidade": "Palhoça", "uf": "SC", "conjuge": "Gisele Marques Goes", "grauConj": "Ministro Licenciado", "funcaoConj": "Pastora", "cidadeAnt": "Aguas Mornas/SC"}, "conj": {"jurMM": true, "matricula": "2014.01.0472", "nome": "Giselle Marques Goes", "grau": "Ministro Licenciado", "funcao": "Pastora", "funcaoLocal": "Pastor(a) Auxiliar", "igrejaCad": "IDPB - Palhoça", "jurisdicao": "Santa Catarina", "inclusao": "2010-11-01", "sexo": "Feminino", "estadoCivil": "Casado(a)", "nacionalidade": "Brasileira", "cidade": "Palhoça", "uf": "SC", "conjuge": "Walcione Dias Goes", "grauConj": "Ministro Licenciado", "funcaoConj": "Pastor", "fonte": "Banco de Dados Nacional (MM)", "proprio": 1, "nomeAlt": "Gisele Marques Goes", "cidadeAnt": "Aguas Mornas/SC"}}, {"id": 17, "nome": "Rejane Severino da Conceição", "igreja": "IDPB Vitória", "cidade": "Vitória", "estado": "ES", "pais": "Brasil", "regiao": "Região Sudeste", "supervisor": "Pr. João Carlos", "membros": 10, "lideres": 1, "cnpj": null, "cnpjNota": "Não possui", "inicio": "2025-02-21", "obra": "Não", "imovel": "Alugado", "terreno": "Não", "terrenoDet": "", "notas": ["Não encontrado no Cadastro Nacional"], "resp": "2026-09-23T14:27", "nac": {"fonte": "Atualização Cadastral 2025 (formulário)", "matricula": "", "nome": "Rejane Severino da Conceição", "estadoCivil": "Solteiro(a)", "sexo": "Feminino", "grau": "Estagiário", "form2025": ["CEP", "CPF", "RG", "celular", "e-mail", "endereço", "estado civil", "grau", "nascimento", "naturalidade", "sexo"]}, "conj": null}, {"id": 18, "nome": "Raimundo Nonato Carvalho dos Santos", "igreja": "IDPB Água Branca", "cidade": "Água Branca", "estado": "PI", "pais": "Brasil", "regiao": "Região Nordeste 01", "supervisor": "Pr. Silvano", "membros": 54, "lideres": 10, "cnpj": null, "cnpjNota": "Possui (número não informado)", "inicio": "2005-09-25", "obra": "Em acabamento", "imovel": "Próprio", "terreno": "Não", "terrenoDet": "", "notas": [], "resp": "2026-09-23T14:28", "nac": {"jurMM": true, "matricula": "2018.08.2031", "nome": "Raimundo Nonato Carvalho dos Santos", "grau": "Ministro Auxiliar", "funcao": "Pastor", "funcaoLocal": "Presidente Igreja Local", "igrejaCad": "Água Branca", "jurisdicao": "Piauí", "inclusao": "2018-07-13", "sexo": "Masculino", "estadoCivil": "Casado(a)", "nacionalidade": "Brasileira", "cidade": "Água Branca", "uf": "PI", "conjuge": "Maria do Socorro Souza dos Santos", "grauConj": "Ministro Auxiliar", "funcaoConj": "Pastora", "form2025": ["celular"]}, "conj": {"jurMM": true, "matricula": "2018.08.2032", "nome": "Maria do Socorro Souza dos Santos", "grau": "Ministro Auxiliar", "funcao": "Pastora", "funcaoLocal": "Ministro Auxiliar", "igrejaCad": "IDPB Água Branca", "jurisdicao": "Piauí", "inclusao": "2018-07-13", "sexo": "Feminino", "estadoCivil": "Casado(a)", "nacionalidade": "Brasileira", "cidade": "Água Branca", "uf": "PI", "conjuge": "Raimundo Nonato Carvalho dos Santos", "grauConj": "Ministro Auxiliar", "funcaoConj": "Pastor", "fonte": "Banco de Dados Nacional (MM)", "proprio": 1}}, {"id": 19, "nome": "Netonio Moreira de Sales", "igreja": "IDPB Portugal", "cidade": "Quinta do Conde", "estado": "Sesimbra", "pais": "Portugal", "regiao": "Internacional", "supervisor": "Pr. Janderson Souza", "membros": 14, "lideres": 1, "cnpj": null, "cnpjNota": "Não informado", "inicio": "2023-05-01", "obra": "Não", "imovel": "Próprio", "terreno": "Não", "terrenoDet": "", "notas": ["Endereço do cadastro (rua e CEP) ainda é de Manaus/AM; a cidade foi atualizada para Quinta do Conde/Portugal"], "resp": "2026-09-23T14:32", "nac": {"jurMM": true, "matricula": "1998.08.0113", "nome": "Netônio Moreira de Sales", "grau": "Ministro Ordenado", "funcao": "Pastor", "funcaoLocal": "Presidente Igreja Local", "igrejaCad": "IDPB Betesda", "jurisdicao": "Internacional – Portugal", "inclusao": "1998-08-01", "sexo": "Masculino", "estadoCivil": "Casado(a)", "nacionalidade": "Brasileira", "cidade": "Quinta do Conde", "uf": "Portugal", "conjuge": "Cileida Tomé da Silva de Sales", "grauConj": "Cônjuge", "funcaoConj": "Pastora", "cidadeAnt": "Manaus/AM"}, "conj": {"jurMM": true, "matricula": "1998.08.0113C", "nome": "Cileida Tomé da Silva de Sales", "grau": "Cônjuge", "funcao": "Pastora", "funcaoLocal": "Cônjuge", "igrejaCad": "IDPB Betesda", "jurisdicao": "Internacional – Portugal", "inclusao": "1998-08-01", "sexo": "Feminino", "estadoCivil": "Casado(a)", "nacionalidade": "Brasileira", "cidade": "Quinta do Conde", "uf": "Portugal", "conjuge": "Netônio Moreira de Sales", "grauConj": "Ministro Ordenado", "funcaoConj": "Pastor", "fonte": "Banco de Dados Nacional (MM)", "proprio": 1, "cidadeAnt": "Manaus/AM"}}, {"id": 20, "nome": "Miguel da Silva Wanzeler", "igreja": "IDPB Criciúma", "cidade": "Criciúma", "estado": "SC", "pais": "Brasil", "regiao": "Região Sul", "supervisor": "Pr. Elias Torres", "membros": 89, "lideres": 18, "cnpj": null, "cnpjNota": "Está em processo de liberação para acesso", "inicio": "2018-03-18", "obra": "Não", "imovel": "Alugado", "terreno": "Sim", "terrenoDet": "Um terreno de 500mt", "notas": ["Endereço do cadastro (rua e CEP) ainda é de Manaus/AM; a cidade foi atualizada para Criciúma/SC"], "resp": "2026-09-23T14:32", "nac": {"jurMM": true, "matricula": "2019.10.0582", "nome": "Miguel da Silva Wanzeler", "grau": "Ministro Cooperador", "funcao": "Pastor", "funcaoLocal": "Pastor(a) Auxiliar", "igrejaCad": "IDPB Filadélfia", "jurisdicao": "Estado de Santa Catarina", "inclusao": "2017-06-01", "sexo": "Masculino", "estadoCivil": "", "nacionalidade": "Brasileira", "cidade": "Criciúma", "uf": "SC", "conjuge": "Antonia das Dores de Freitas Wanzeler", "grauConj": "", "funcaoConj": "", "cidadeAnt": "Manaus/AM"}, "conj": {"jurMM": true, "matricula": "2019.10.0583", "nome": "Antônia das Dores de Freitas Wanzeler", "grau": "Ministro Cooperador", "funcao": "Pastora", "funcaoLocal": "Pastor(a) Auxiliar", "igrejaCad": "IDPB Filadélfia", "jurisdicao": "Estado de Santa Catarina", "inclusao": "2017-06-01", "sexo": "Feminino", "estadoCivil": "Casado(a)", "nacionalidade": "Brasileira", "cidade": "Criciúma", "uf": "SC", "conjuge": "Miguel da Silva Wanzeler", "grauConj": "", "funcaoConj": "Ministro Auxiliar", "fonte": "Banco de Dados Nacional (MM)", "proprio": 1, "form2025": ["celular", "e-mail"]}}, {"id": 21, "nome": "Evandro Almeida Costa", "igreja": "IDPB Tianguá", "cidade": "Tianguá", "estado": "CE", "pais": "Brasil", "regiao": "Região Nordeste 01", "supervisor": "Pr. Silvano", "membros": 18, "lideres": 3, "cnpj": "16.714.131/0001-70", "cnpjNota": null, "inicio": "2015-08-16", "obra": "Sim", "imovel": "Próprio", "terreno": "Não", "terrenoDet": "", "notas": [], "resp": "2026-09-23T14:41", "nac": {"jurMM": true, "matricula": "2017.11.2031", "nome": "Evandro Almeida Costa", "grau": "Ministro Auxiliar", "funcao": "Pastor", "funcaoLocal": "Pastor(a) Auxiliar", "igrejaCad": "IDPB Tianguá", "jurisdicao": "Ceará", "inclusao": "2017-11-24", "sexo": "Masculino", "estadoCivil": "Casado(a)", "nacionalidade": "Brasileira", "cidade": "Tianguá", "uf": "CE", "conjuge": "Gilmara Gama da Silva", "grauConj": "", "funcaoConj": ""}, "conj": {"jurMM": true, "matricula": "2017.11.2031C", "nome": "Gilmara Gama da Silva", "grau": "Cônjuge", "funcao": "Pastora", "funcaoLocal": "Cônjuge", "igrejaCad": "IDPB Tianguá", "jurisdicao": "Ceará", "inclusao": "2017-11-24", "sexo": "Feminino", "estadoCivil": "Casado(a)", "nacionalidade": "Brasileira", "cidade": "Tianguá", "uf": "CE", "conjuge": "Evandro Almeida Costa", "grauConj": "", "funcaoConj": "", "fonte": "Banco de Dados Nacional (MM)", "proprio": 1, "cidadeAnt": "Tianguá/AM", "form2025": ["e-mail"]}}, {"id": 22, "nome": "Pedro Gonçalves da Silva", "igreja": "IDPB Salvador", "cidade": "Salvador", "estado": "BA", "pais": "Brasil", "regiao": "Região Nordeste 03", "supervisor": "Pr. Francisco José", "membros": 17, "lideres": 5, "cnpj": null, "cnpjNota": "Não possui", "inicio": "2013-09-23", "obra": "Sim", "imovel": "Alugado", "terreno": "Não", "terrenoDet": "", "notas": [], "resp": "2026-09-23T14:49", "nac": {"jurMM": true, "matricula": "2022.05.2035", "nome": "Pedro Gonçalves da Silva", "grau": "Ministro Auxiliar", "funcao": "Missionário", "funcaoLocal": "Presidente Igreja Local", "igrejaCad": "IDPB Salvador", "jurisdicao": "Estado da Bahia", "inclusao": "2022-06-22", "sexo": "Masculino", "estadoCivil": "Casado(a)", "nacionalidade": "Brasileira", "cidade": "Salvador", "uf": "BA", "conjuge": "Rosilene Carreiro Gonçalves", "grauConj": "Ministro Auxiliar", "funcaoConj": ""}, "conj": {"jurMM": true, "matricula": "2022.05.2036", "nome": "Rosilene Carreiro Gonçalves", "grau": "Ministro Auxiliar", "funcao": "Missionário", "funcaoLocal": "Ministro Auxiliar", "igrejaCad": "IDPB Salvador", "jurisdicao": "Estado da Bahia", "inclusao": "2022-06-22", "sexo": "Feminino", "estadoCivil": "Casado(a)", "nacionalidade": "Brasileira", "cidade": "Salvador", "uf": "BA", "conjuge": "Pedro Gonçalves da Silva", "grauConj": "Ministro Auxiliar", "funcaoConj": "Missionário", "fonte": "Banco de Dados Nacional (MM)", "proprio": 1, "emailDTR": "[dado removido]"}}, {"id": 23, "nome": "Edvaldo Oliveira de Lima", "igreja": "IDPB Natal", "cidade": "Natal e Extremoz", "estado": "RN", "pais": "Brasil", "regiao": "Região Nordeste 02", "supervisor": "Pr. Hudson Fernandes", "membros": 60, "lideres": 12, "cnpj": null, "cnpjNota": "Não possui", "inicio": "2011-09-13", "obra": "Sim", "imovel": "Próprio", "terreno": "Sim", "terrenoDet": "na Cidade de EXTREMOZ", "notas": [], "resp": "2026-09-23T14:52", "nac": {"jurMM": true, "matricula": "2012.12.0412", "nome": "Edvaldo Oliveira de Lima", "grau": "Ministro Cooperador", "funcao": "Pastor", "funcaoLocal": "Presidente Igreja Local", "igrejaCad": "IDPB - Natal", "jurisdicao": "Estado do Rio Grande do Norte", "inclusao": "2012-12-31", "sexo": "Masculino", "estadoCivil": "Casado(a)", "nacionalidade": "Brasileira", "cidade": "Natal e Extremoz", "uf": "RN", "conjuge": "Mary Tânia Garcia de Lima", "grauConj": "Ministro Cooperador", "funcaoConj": "", "cidadeAnt": "Natal/RN", "form2025": ["celular"]}, "conj": {"jurMM": true, "matricula": "2012.12.0413", "nome": "Mary Tânia Garcia de Lima", "grau": "Ministro Cooperador", "funcao": "Pastora", "funcaoLocal": "Pastor(a) Auxiliar", "igrejaCad": "IDPB - Natal", "jurisdicao": "Estado do Rio Grande do Norte", "inclusao": "2012-12-31", "sexo": "Feminino", "estadoCivil": "Casado(a)", "nacionalidade": "", "cidade": "Natal e Extremoz", "uf": "RN", "conjuge": "Edvaldo Oliveira de Lima", "grauConj": "Ministro Cooperador", "funcaoConj": "", "fonte": "Banco de Dados Nacional (MM)", "proprio": 1, "cidadeAnt": "Natal/RN", "form2025": ["celular", "naturalidade"]}}, {"id": 24, "nome": "Francisco José Pinheiro de Oliveira", "igreja": "IDPB Juazeiro", "cidade": "Juazeiro do Norte", "estado": "CE", "pais": "Brasil", "regiao": "Região Nordeste 01", "supervisor": "Pr. Silvano", "membros": 97, "lideres": 8, "cnpj": null, "cnpjNota": "Não possui", "inicio": "2019-08-30", "obra": "Não", "imovel": "Alugado", "terreno": "Verificar", "terrenoDet": "Resposta: “2”", "notas": ["Jurisdição no Cadastro Nacional: Estado do Amazonas (não está no Ministério de Missões)", "Endereço do cadastro (rua e CEP) ainda é de Manaus/AM; a cidade foi atualizada para Juazeiro do Norte/CE", "Auxiliar sem Cadastro Nacional: Everaldo Marques Pequeno", "Auxiliar sem Cadastro Nacional: Alcinele Viana Farias"], "resp": "2026-09-23T15:03", "nac": {"jurMM": false, "matricula": "2008.11.0262", "nome": "Francisco José Pinheiro de Oliveira", "grau": "Ministro Ordenado", "funcao": "Pastor", "funcaoLocal": "Presidente Igreja Local", "igrejaCad": "IDPB Juazeiro do Norte/ce", "jurisdicao": "Estado do Amazonas", "inclusao": "2008-10-01", "sexo": "Masculino", "estadoCivil": "Casado(a)", "nacionalidade": "Brasileira", "cidade": "Juazeiro do Norte", "uf": "CE", "conjuge": "Erica Angela de Oliveira", "grauConj": "Cônjuge", "funcaoConj": "Pastora", "fonte": "Banco de Dados Nacional completo", "cidadeAnt": "Manaus/AM"}, "conj": {"jurMM": false, "matricula": "2008.11.0261C", "nome": "Erica Angela de Oliveira", "grau": "Cônjuge", "funcao": "Pastora", "funcaoLocal": "Cônjuge", "igrejaCad": "IDPB Juazeiro do Norte/ce", "jurisdicao": "Estado do Amazonas", "inclusao": "2008-10-01", "sexo": "Feminino", "estadoCivil": "Casado(a)", "nacionalidade": "Brasileira", "cidade": "Juazeiro do Norte", "uf": "CE", "conjuge": "Francisco José Pinheiro de Oliveira", "grauConj": "Ministro Cooperador", "funcaoConj": "Pastor", "fonte": "Banco de Dados Nacional completo", "proprio": 1, "cidadeAnt": "Manaus/AM"}, "aux": [{"nome": "Everaldo Marques Pequeno", "sexo": "Masculino", "matricula": "", "grau": "Ministro Auxiliar", "funcao": "", "cidade": "Juazeiro do Norte", "uf": "CE", "estadoCivil": "Casado(a)", "fonte": "Questionário DTR (sem cadastro no Banco Nacional)", "proprio": 0, "conjRec": {"nome": "Alcinele Viana Farias", "sexo": "Feminino", "matricula": "", "grau": "Ministro Auxiliar", "funcao": "", "cidade": "Juazeiro do Norte", "uf": "CE", "estadoCivil": "Casado(a)", "fonte": "Questionário DTR (sem cadastro no Banco Nacional)", "proprio": 0, "form2025": ["CEP", "CPF", "RG", "celular", "endereço", "estado civil", "grau", "nascimento", "naturalidade"]}, "dtrNota": "Casal vinculado pelo e-mail “nellypequeno”/“veve.pequeno”; não estão no Banco Nacional", "form2025": ["CEP", "CPF", "RG", "celular", "endereço", "estado civil", "grau", "nascimento", "naturalidade"]}, {"jurMM": false, "matricula": "2007.11.0223C", "nome": "Marivane Oliveira Macêdo Nogueira", "grau": "Cônjuge", "funcao": "Pastora", "funcaoLocal": "Cônjuge", "igrejaCad": "Presidente Figueiredo", "jurisdicao": "Estado do Amazonas", "inclusao": "2007-11-01", "sexo": "Feminino", "estadoCivil": "Viúvo(a)", "nacionalidade": "Brasileira", "cidade": "Juazeiro do Norte", "uf": "CE", "conjuge": "", "grauConj": "Ministro Licenciado", "funcaoConj": "Pastor", "fonte": "Banco de Dados Nacional completo", "conjRec": null, "id": "n2007110223C", "cidadeAnt": "Barbalha/CE", "obsFalec": "Cônjuge falecido: Pr. Jocileu Viana Nogueira"}]}, {"id": 25, "nome": "Maria Rosângela Braga Vieira", "igreja": "IDPB Pinheiro", "cidade": "Pinheiro", "estado": "MA", "pais": "Brasil", "regiao": "Região Nordeste 01", "supervisor": "Pr. Silvano", "membros": 8, "lideres": 0, "cnpj": null, "cnpjNota": "Não possui", "inicio": "2022-02-23", "obra": "Não", "imovel": "Alugado", "terreno": "Não", "terrenoDet": "", "notas": ["Endereço do cadastro (rua e CEP) ainda é de Manaus/AM; a cidade foi atualizada para Pinheiro/MA"], "resp": "2026-09-23T15:05", "nac": {"jurMM": true, "matricula": "2022.05.2038", "nome": "Maria Rosângela Braga Vieira", "grau": "Ministro Auxiliar", "funcao": "Missionária", "funcaoLocal": "", "igrejaCad": "IDPB Pinheiro", "jurisdicao": "Maranhão", "inclusao": "2022-05-21", "sexo": "Feminino", "estadoCivil": "Solteiro(a)", "nacionalidade": "Brasileira", "cidade": "Pinheiro", "uf": "MA", "conjuge": "", "grauConj": "", "funcaoConj": "", "cidadeAnt": "Manaus/AM"}, "conj": null}, {"id": 26, "nome": "Michael Lopes Soares", "igreja": "IDPB Joinville", "cidade": "Joinville", "estado": "SC", "pais": "Brasil", "regiao": "Região Sul", "supervisor": "Pr. Elias Torres", "membros": 138, "lideres": 18, "cnpj": null, "cnpjNota": "Não possui", "inicio": "2020-03-07", "obra": "Não", "imovel": "Alugado", "terreno": "Não", "terrenoDet": "", "notas": ["Jurisdição no Cadastro Nacional: Estado do Amazonas (não está no Ministério de Missões)"], "resp": "2026-09-23T15:08", "nac": {"jurMM": false, "matricula": "2012.11.0376", "nome": "Michael Lopes Soares", "grau": "Ministro Licenciado", "funcao": "Pastor", "funcaoLocal": "Pastor(a) Auxiliar", "igrejaCad": "Filadélfia", "jurisdicao": "Estado do Amazonas", "inclusao": "2012-12-31", "sexo": "Masculino", "estadoCivil": "Casado(a)", "nacionalidade": "Brasileira", "cidade": "Joinville", "uf": "SC", "conjuge": "Danielle Jefferson Soares", "grauConj": "Ministro Cooperador", "funcaoConj": "Pastora", "fonte": "Banco de Dados Nacional completo", "proprio": 1, "cidadeAnt": "Joinvile/SC", "form2025": ["e-mail"]}, "conj": {"jurMM": false, "matricula": "2012.11.0374", "nome": "Danielle Jefferson Soares", "grau": "Ministro Licenciado", "funcao": "Pastora", "funcaoLocal": "Pastor(a) Auxiliar", "igrejaCad": "Filadelfia", "jurisdicao": "Estado do Amazonas", "inclusao": "2012-12-31", "sexo": "Feminino", "estadoCivil": "Casado(a)", "nacionalidade": "Brasileira", "cidade": "Joinville", "uf": "SC", "conjuge": "Michael Lopes Soares", "grauConj": "Ministro Cooperador", "funcaoConj": "Pastor", "fonte": "Banco de Dados Nacional completo", "cidadeAnt": "Joinvile/SC", "papel": "Pastora auxiliar (cônjuge do titular)", "proprio": 1}, "aux": [{"jurMM": false, "matricula": "2013.11.0449", "nome": "Cireno Marialva Soares", "grau": "Ministro Ordenado", "funcao": "Pastor", "funcaoLocal": "Pastor(a) Auxiliar", "igrejaCad": "Filadélfia", "jurisdicao": "Estado do Amazonas", "inclusao": "2013-12-05", "sexo": "Masculino", "estadoCivil": "Casado(a)", "nacionalidade": "Brasileira", "cidade": "Joinville", "uf": "SC", "conjuge": "Valdina Lopes Soares", "grauConj": "Cônjuge", "funcaoConj": "", "conjRec": {"jurMM": false, "matricula": "2019.11.0606", "nome": "Valdina Lopes Soares", "grau": "Ministro Cooperador", "funcao": "Pastora", "funcaoLocal": "Pastor(a) Auxiliar", "igrejaCad": "Filadelfia", "jurisdicao": "Estado do Amazonas", "inclusao": "2013-12-05", "sexo": "Feminino", "estadoCivil": "Casado(a)", "nacionalidade": "Brasileira", "cidade": "Joinville", "uf": "SC", "conjuge": "Cireno Marialva Soares", "grauConj": "Ministro Cooperador", "funcaoConj": "Pastor", "cidadeAnt": "Manaus/AM", "form2025": ["e-mail"]}, "fonte": "Banco de Dados Nacional completo", "id": "n2013110449", "cidadeAnt": "Manaus/AM"}], "respPor": "Danielle Jefferson Soares"}, {"id": 27, "nome": "Luiz Carlos Lucena de Almeida", "igreja": "IDPB Curitiba", "cidade": "Curitiba", "estado": "PR", "pais": "Brasil", "regiao": "Região Sul", "supervisor": "Pr. Elias Torres", "membros": 22, "lideres": 7, "cnpj": null, "cnpjNota": "Não possui", "inicio": "2023-01-17", "obra": "Não", "imovel": "Alugado", "terreno": "Não", "terrenoDet": "", "notas": ["Jurisdição no Cadastro Nacional: Estado do Amazonas (não está no Ministério de Missões)"], "resp": "2026-09-23T15:26", "nac": {"jurMM": false, "matricula": "2010.11.0306", "nome": "Luiz Carlos Lucena de Almeida", "grau": "Ministro Licenciado", "funcao": "Pastor", "funcaoLocal": "Presidente Igreja Local", "igrejaCad": "Compensa Brasiléia", "jurisdicao": "Estado do Amazonas", "inclusao": "2010-11-01", "sexo": "Masculino", "estadoCivil": "Casado(a)", "nacionalidade": "Brasileira", "cidade": "Curitiba", "uf": "PR", "conjuge": "Aldelice Souza dos Santos de Almeida", "grauConj": "Cônjuge", "funcaoConj": "Pastora", "fonte": "Banco de Dados Nacional completo"}, "conj": {"jurMM": false, "matricula": "2010.11.0306C", "nome": "Aldelice Souza dos Santos de Almeida", "grau": "Cônjuge", "funcao": "Pastora", "funcaoLocal": "Cônjuge", "igrejaCad": "Compensa Brasiléia", "jurisdicao": "Estado do Amazonas", "inclusao": "2010-11-01", "sexo": "Feminino", "estadoCivil": "Casado(a)", "nacionalidade": "Brasileira", "cidade": "Curitiba", "uf": "PR", "conjuge": "Luiz Carlos Lucena de Almeida", "grauConj": "Ministro Cooperador", "funcaoConj": "Pastor", "fonte": "Banco de Dados Nacional completo", "proprio": 1, "cidadeAnt": "Manaus/AM"}}, {"id": 28, "nome": "Manoel Vitor da Silva", "igreja": "IDPB Parnaíba", "cidade": "Parnaíba", "estado": "PI", "pais": "Brasil", "regiao": "Região Nordeste 01", "supervisor": "Pr. Silvano", "membros": 17, "lideres": 4, "cnpj": "14.101.350/0001-59", "cnpjNota": null, "inicio": "2022-09-01", "obra": "Sim", "imovel": "Próprio", "terreno": "Não", "terrenoDet": "", "notas": ["CNPJ igual ao de Elias da Silva Parente"], "resp": "2026-09-23T15:29", "nac": {"jurMM": true, "matricula": "2022.01.2039", "nome": "Manoel Vitor da Silva", "grau": "Ministro Cooperador", "funcao": "Missionário", "funcaoLocal": "", "igrejaCad": "IDPB Parnaiba", "jurisdicao": "Estado do Piauí", "inclusao": null, "sexo": "Masculino", "estadoCivil": "Casado(a)", "nacionalidade": "Brasileira", "cidade": "Parnaíba", "uf": "PI", "conjuge": "Leonilia Luzia Mesquita Mendes", "grauConj": "Ministro Auxiliar", "funcaoConj": "", "cidadeAnt": "Paranaíba/PI"}, "conj": {"jurMM": true, "matricula": "2022.01.2040", "nome": "Leonilia Luzia Mesquita Mendes", "grau": "Cônjuge", "funcao": "Missionário", "funcaoLocal": "", "igrejaCad": "IDPB Parnaiba", "jurisdicao": "Estado do Piauí", "inclusao": null, "sexo": "Feminino", "estadoCivil": "Casado(a)", "nacionalidade": "Brasileira", "cidade": "Parnaíba", "uf": "PI", "conjuge": "Manoel Vitor da Silva", "grauConj": "Ministro Auxiliar", "funcaoConj": "", "fonte": "Banco de Dados Nacional (MM)", "proprio": 1, "cidadeAnt": "Paranaíba/PI", "emailDTR": "[dado removido]"}}, {"id": 29, "nome": "Gemerson Candido Goes", "igreja": "IDPB Garanhuns", "cidade": "Garanhuns", "estado": "PE", "pais": "Brasil", "regiao": "Região Nordeste 02", "supervisor": "Pr. Hudson Fernandes", "membros": 14, "lideres": 2, "cnpj": null, "cnpjNota": "Não possui", "inicio": "2023-09-30", "obra": "Não", "imovel": "Alugado", "terreno": "Não", "terrenoDet": "", "notas": ["Cônjuge sem cadastro próprio: Izabela Dayane Martins Branco Candido"], "resp": "2026-09-23T15:35", "nac": {"jurMM": true, "matricula": "2022.05.2039", "nome": "Gemerson Candido Goes", "grau": "Ministro Auxiliar", "funcao": "", "funcaoLocal": "", "igrejaCad": "IDPB Garanhuns", "jurisdicao": "Estado de Pernambuco", "inclusao": "2024-03-31", "sexo": "Masculino", "estadoCivil": "Casado(a)", "nacionalidade": "Brasileira", "cidade": "Garanhuns", "uf": "PE", "conjuge": "Izabela Dayane Martins Branco Candido", "grauConj": "", "funcaoConj": "", "form2025": ["celular"]}, "conj": {"nome": "Izabela Dayane Martins Branco Candido", "grau": "Cônjuge", "funcao": "", "sexo": "Feminino", "matricula": "", "estadoCivil": "Casado(a)", "fonte": "Ficha do cônjuge no Banco Nacional (sem cadastro próprio)", "proprio": 0, "cidade": "Garanhuns", "uf": "PE", "form2025": ["CPF", "RG", "celular", "grau", "nascimento", "naturalidade"]}, "emailDTR": "[dado removido]"}, {"id": 30, "nome": "Sebastião Cristiano Soares de Oliveira", "igreja": "IDPB Maceió", "cidade": "Maceió", "estado": "AL", "pais": "Brasil", "regiao": "Região Nordeste 03", "supervisor": "Pr. Francisco José", "membros": 40, "lideres": 2, "cnpj": null, "cnpjNota": "Não possui", "inicio": "2011-03-23", "obra": "Sim", "imovel": "Próprio", "terreno": "Não", "terrenoDet": "", "notas": [], "resp": "2026-09-23T15:41", "nac": {"jurMM": true, "matricula": "2016.10.0524", "nome": "Sebastião Cristiano Soares de Oliveira", "grau": "Ministro Cooperador", "funcao": "Pastor", "funcaoLocal": "Presidente Igreja Local", "igrejaCad": "IDPB Maceió", "jurisdicao": "Alagoas", "inclusao": "2016-10-17", "sexo": "Masculino", "estadoCivil": "Casado(a)", "nacionalidade": "Brasileira", "cidade": "Maceió", "uf": "AL", "conjuge": "Luciana Barbosa de Oliveira", "grauConj": "Ministro Auxiliar", "funcaoConj": "Conjuge", "form2025": ["celular"]}, "conj": {"jurMM": true, "matricula": "2016.10.0523", "nome": "Luciana Barbosa de Oliveira", "grau": "Ministro Cooperador", "funcao": "Pastora", "funcaoLocal": "Ministro Auxiliar", "igrejaCad": "IDPB Maceió", "jurisdicao": "Estado de Alagoas", "inclusao": "2016-10-17", "sexo": "Feminino", "estadoCivil": "Casado(a)", "nacionalidade": "Brasileira", "cidade": "Maceió", "uf": "AL", "conjuge": "Sebastião Cristiano Soares de Oliveira", "grauConj": "Ministro Auxiliar", "funcaoConj": "Pastor", "fonte": "Banco de Dados Nacional (MM)", "proprio": 1, "form2025": ["celular"]}, "emailDTR": "[dado removido]"}, {"id": 31, "nome": "Marcondes Nogueira Jacó", "igreja": "IDPB Russas", "cidade": "Russas", "estado": "CE", "pais": "Brasil", "regiao": "Região Nordeste 01", "supervisor": "Pr. Silvano", "membros": 30, "lideres": 3, "cnpj": null, "cnpjNota": "Não possui", "inicio": "2015-03-23", "obra": "Sim", "imovel": "Alugado", "terreno": "Não", "terrenoDet": "", "notas": [], "resp": "2026-09-23T15:41", "nac": {"jurMM": true, "matricula": "2012.11.0371", "nome": "Marcondes Nogueira Jacó", "grau": "Ministro Cooperador", "funcao": "Pastor", "funcaoLocal": "Presidente Igreja Local", "igrejaCad": "Russas-ce", "jurisdicao": "Estado do Ceará", "inclusao": "2012-12-31", "sexo": "Masculino", "estadoCivil": "Casado(a)", "nacionalidade": "Brasileira", "cidade": "Russas", "uf": "CE", "conjuge": "Rita Maia Jacó", "grauConj": "Cônjuge", "funcaoConj": "Cônjuge", "form2025": ["celular"]}, "conj": {"jurMM": true, "matricula": "2012.11.0371C", "nome": "Rita Maia Jacó", "grau": "Cônjuge", "funcao": "Cônjuge", "funcaoLocal": "Cônjuge", "igrejaCad": "Russas - Ce", "jurisdicao": "Estado do Ceará", "inclusao": null, "sexo": "Feminino", "estadoCivil": "Casado(a)", "nacionalidade": "Brasileira", "cidade": "Russas", "uf": "CE", "conjuge": "Marcondes Nogueira Jacó", "grauConj": "Ministro Cooperador", "funcaoConj": "Pastor", "fonte": "Banco de Dados Nacional (MM)", "proprio": 1}}, {"id": 32, "nome": "Vivaldo de Souza Ferreira", "igreja": "IDPB Campina Grande", "cidade": "Campina Grande", "estado": "PB", "pais": "Brasil", "regiao": "Região Nordeste 02", "supervisor": "Pr. Hudson Fernandes", "membros": 30, "lideres": 8, "cnpj": null, "cnpjNota": "Não possui", "inicio": "2024-03-15", "obra": "Não", "imovel": "Alugado", "terreno": "Não", "terrenoDet": "", "notas": ["Não encontrado no Cadastro Nacional"], "resp": "2026-09-23T15:48", "nac": {"fonte": "Atualização Cadastral 2025 (formulário)", "matricula": "", "nome": "Vivaldo de Souza Ferreira", "estadoCivil": "Casado(a)", "sexo": "Masculino", "grau": "Ministro Auxiliar", "form2025": ["CEP", "CPF", "RG", "celular", "e-mail", "endereço", "estado civil", "grau", "nascimento", "naturalidade", "sexo"]}, "conj": {"nome": "Elisjane dos Santos Ferreira", "sexo": "Feminino", "matricula": "", "grau": "Cônjuge", "funcao": "", "cidade": "Campina Grande", "uf": "PB", "estadoCivil": "Casado(a)", "fonte": "Questionário DTR (sem cadastro no Banco Nacional)", "proprio": 0, "dtrNota": "Vinculado(a) pelo e-mail em comum no questionário DTR", "form2025": ["CEP", "CPF", "RG", "celular", "endereço", "estado civil", "grau", "nascimento", "naturalidade"]}}, {"id": 33, "nome": "Elpercy de Souza Gato", "igreja": "IDPB Goianira", "cidade": "Goianira", "estado": "GO", "pais": "Brasil", "regiao": "Região Oeste", "supervisor": "Pr. José Roberto", "membros": 28, "lideres": 6, "cnpj": null, "cnpjNota": "Não possui", "inicio": "2013-01-14", "obra": "Sim", "imovel": "Próprio", "terreno": "Não", "terrenoDet": "", "notas": [], "resp": "2026-09-23T15:58", "nac": {"jurMM": true, "matricula": "2013.01.0416", "nome": "Elpercy de Souza Gato", "grau": "Ministro Cooperador", "funcao": "Pastor", "funcaoLocal": "Presidente Igreja Local", "igrejaCad": "Goiânia", "jurisdicao": "Estado de Goiás", "inclusao": "2013-03-08", "sexo": "Masculino", "estadoCivil": "Casado(a)", "nacionalidade": "Brasileira", "cidade": "Goianira", "uf": "GO", "conjuge": "Glaucimara de Souza Batista", "grauConj": "Cônjuge", "funcaoConj": "", "cidadeAnt": "Goiânia/GO"}, "conj": {"jurMM": true, "matricula": "2013.01.0416C", "nome": "Glaucimara de Souza Batista Gato", "grau": "Cônjuge", "funcao": "Pastora", "funcaoLocal": "Cônjuge", "igrejaCad": "Goiânia", "jurisdicao": "Estado de Goiás", "inclusao": "2013-03-08", "sexo": "Feminino", "estadoCivil": "Casado(a)", "nacionalidade": "Brasileira", "cidade": "Goianira", "uf": "GO", "conjuge": "Elpercy de Souza Gato", "grauConj": "Ministro Cooperador", "funcaoConj": "Pastor", "fonte": "Banco de Dados Nacional (MM)", "proprio": 1, "cidadeAnt": "Goiânia/GO"}}, {"id": 34, "nome": "Cassiano Gomes de Freitas", "igreja": "IDPB Nazaré da Mata", "cidade": "Nazaré da Mata", "estado": "PE", "pais": "Brasil", "regiao": "Região Nordeste 02", "supervisor": "Pr. Hudson Fernandes", "membros": 7, "lideres": 2, "cnpj": "36.556.333/0001-49", "cnpjNota": null, "inicio": "2025-01-20", "obra": "Não", "imovel": "Alugado", "terreno": "Não", "terrenoDet": "", "notas": ["Não encontrado no Cadastro Nacional"], "resp": "2026-09-23T16:34", "nac": null, "conj": {"nome": "Tatiane Alves de Azevedo", "sexo": "Feminino", "matricula": "", "grau": "Cônjuge", "funcao": "", "cidade": "Nazaré da Mata", "uf": "PE", "estadoCivil": "Casado(a)", "fonte": "Questionário DTR (sem cadastro no Banco Nacional)", "proprio": 0, "dtrNota": "Vinculado(a) pelo e-mail em comum no questionário DTR", "form2025": ["CEP", "CPF", "RG", "celular", "endereço", "estado civil", "grau", "nascimento", "naturalidade"]}}, {"id": 35, "nome": "Isaías Gomes dos Santos", "igreja": "IDPB Paraguai", "cidade": "Mbocayaty", "estado": "Central", "pais": "Paraguai", "regiao": "Internacional", "supervisor": "Pr. Janderson Souza", "membros": 19, "lideres": 4, "cnpj": null, "cnpjNota": "Não informado", "inicio": "2018-07-04", "obra": "Não", "imovel": "Alugado", "terreno": "Não", "terrenoDet": "", "notas": [], "resp": "2026-09-23T16:49", "nac": {"jurMM": true, "matricula": "2016.01.2018", "nome": "Isaias Gomes dos Santos", "grau": "Ministro Auxiliar", "funcao": "Missionário", "funcaoLocal": "Ministro Auxiliar", "igrejaCad": "Paraguai", "jurisdicao": "Internacional – Paraguai", "inclusao": "2016-02-22", "sexo": "Masculino", "estadoCivil": "Casado(a)", "nacionalidade": "Brasileira", "cidade": "Mbocayaty", "uf": "Paraguai", "conjuge": "Alcilene Rocha Gomes", "grauConj": "Ministro Auxiliar", "funcaoConj": "", "cidadeAnt": "/"}, "conj": {"jurMM": true, "matricula": "2016.01.2019", "nome": "Alcilene Rocha Gomes", "grau": "Ministro Auxiliar", "funcao": "Missionária", "funcaoLocal": "Ministro Auxiliar", "igrejaCad": "Paraguai", "jurisdicao": "Internacional – Paraguai", "inclusao": "2016-02-22", "sexo": "Feminino", "estadoCivil": "Casado(a)", "nacionalidade": "Brasileira", "cidade": "Mbocayaty", "uf": "Paraguai", "conjuge": "Isaias Gomes dos Santos", "grauConj": "Ministro Auxiliar", "funcaoConj": "", "fonte": "Banco de Dados Nacional (MM)", "proprio": 1}}, {"id": 36, "nome": "Dionis Maia Pires", "igreja": "IDPB Cuiabá", "cidade": "Cuiabá", "estado": "MT", "pais": "Brasil", "regiao": "Região Oeste", "supervisor": "Pr. José Roberto", "membros": 35, "lideres": 5, "cnpj": null, "cnpjNota": "Não possui", "inicio": "2014-04-07", "obra": "Não", "imovel": "Próprio", "terreno": "Não", "terrenoDet": "", "notas": [], "resp": "2026-09-23T17:05", "nac": {"jurMM": true, "matricula": "2015.01.2009", "nome": "Dionis Maia Pires", "grau": "Ministro Licenciado", "funcao": "Pastor", "funcaoLocal": "Presidente Igreja Local", "igrejaCad": "IDPB Cuiabá", "jurisdicao": "Mato Grosso", "inclusao": "2015-03-12", "sexo": "Masculino", "estadoCivil": "Casado(a)", "nacionalidade": "Brasileira", "cidade": "Cuiabá", "uf": "MT", "conjuge": "Francineide de Freitas Bom Jesus Maia", "grauConj": "", "funcaoConj": "", "form2025": ["celular"]}, "conj": {"jurMM": true, "matricula": "2015.01.2010", "nome": "Francineide de Freitas Bom Jesus Maia", "grau": "Ministro Licenciado", "funcao": "Pastora", "funcaoLocal": "Pastor(a) Auxiliar", "igrejaCad": "Mato Grosso", "jurisdicao": "Mato Grosso", "inclusao": "2015-03-12", "sexo": "Feminino", "estadoCivil": "Casado(a)", "nacionalidade": "Brasileira", "cidade": "Cuiabá", "uf": "MT", "conjuge": "Dionis Maia Pires", "grauConj": "", "funcaoConj": "", "fonte": "Banco de Dados Nacional (MM)", "proprio": 1}}, {"id": 37, "nome": "Silvano da Silva Vieira", "igreja": "IDPB Fortaleza", "cidade": "Fortaleza", "estado": "CE", "pais": "Brasil", "regiao": "Região Nordeste 01", "supervisor": "Pr. Silvano", "membros": 30, "lideres": 4, "cnpj": "13.072.342/0001-69", "cnpjNota": null, "inicio": "2007-03-22", "obra": "Não", "imovel": "Próprio", "terreno": "Não", "terrenoDet": "", "notas": [], "resp": "2026-09-23T17:06", "nac": {"jurMM": true, "matricula": "2008.03.0239", "nome": "Silvano da Silva Vieira", "grau": "Ministro Ordenado", "funcao": "Pastor", "funcaoLocal": "Presidente Igreja Local", "igrejaCad": "Fortaleza", "jurisdicao": "Estado do Ceará", "inclusao": "2008-03-01", "sexo": "Masculino", "estadoCivil": "Casado(a)", "nacionalidade": "Brasileira", "cidade": "Fortaleza", "uf": "CE", "conjuge": "Eliana Cardoso Vieira", "grauConj": "Cônjuge", "funcaoConj": "Pastora", "form2025": ["celular"]}, "conj": {"jurMM": true, "matricula": "2008.03.0239C", "nome": "Eliana Cardoso Vieira", "grau": "Cônjuge", "funcao": "Pastora", "funcaoLocal": "Cônjuge", "igrejaCad": "Fortaleza", "jurisdicao": "Estado do Ceará", "inclusao": "2008-03-01", "sexo": "Feminino", "estadoCivil": "Casado(a)", "nacionalidade": "Brasileira", "cidade": "Fortaleza", "uf": "CE", "conjuge": "Silvano da Silva Vieira", "grauConj": "Ministro Ordenado", "funcaoConj": "Pastor", "fonte": "Banco de Dados Nacional (MM)", "proprio": 1}, "emailDTR": "[dado removido]"}, {"id": 38, "nome": "Ondino Ramos Pedrosa", "igreja": "IDPB Aparecida de Goiânia", "cidade": "Aparecida de Goiânia", "estado": "GO", "pais": "Brasil", "regiao": "Região Oeste", "supervisor": "Pr. José Roberto", "membros": 27, "lideres": 3, "cnpj": null, "cnpjNota": "Não possui", "inicio": "2023-01-07", "obra": "Sim", "imovel": "Próprio", "terreno": "Não", "terrenoDet": "", "notas": ["Jurisdição no Cadastro Nacional: Estado do Amazonas (não está no Ministério de Missões)", "Endereço do cadastro (rua e CEP) ainda é de Manaus/AM; a cidade foi atualizada para Aparecida de Goiânia/GO"], "resp": "2026-09-23T17:26", "nac": {"jurMM": false, "matricula": "2016.12.0535", "nome": "Ondino Ramos Pedrosa", "grau": "Ministro Licenciado", "funcao": "Pastor", "funcaoLocal": "Pastor(a) Auxiliar", "igrejaCad": "Terra Nova", "jurisdicao": "Estado do Amazonas", "inclusao": "2017-01-20", "sexo": "Masculino", "estadoCivil": "Casado(a)", "nacionalidade": "Brasileira", "cidade": "Aparecida de Goiânia", "uf": "GO", "conjuge": "Fúlvia Maria Santana Monteiro Pedrosa", "grauConj": "Ministro Cooperador", "funcaoConj": "", "fonte": "Banco de Dados Nacional completo", "cidadeAnt": "Manaus/AM"}, "conj": {"jurMM": false, "matricula": "2019.11.0596", "nome": "Fulvia Maria Santana M. Pedrosa", "grau": "Ministro Cooperador", "funcao": "Pastora", "funcaoLocal": "Pastor(a) Auxiliar", "igrejaCad": "Terra Nova 2", "jurisdicao": "Estado do Amazonas", "inclusao": null, "sexo": "Feminino", "estadoCivil": "Casado(a)", "nacionalidade": "Brasileira", "cidade": "Aparecida de Goiânia", "uf": "GO", "conjuge": "Ondino Ramos Pedrosa", "grauConj": "Ministro Cooperador", "funcaoConj": "", "fonte": "Banco de Dados Nacional completo", "proprio": 1, "nomeAlt": "Fúlvia Maria Santana Monteiro Pedrosa", "cidadeAnt": "Manaus/AM"}}, {"id": 39, "nome": "Ueber Souza de Sá", "igreja": "IDPB Serra", "cidade": "Serra", "estado": "ES", "pais": "Brasil", "regiao": "Região Sudeste", "supervisor": "Pr. João Carlos", "membros": 56, "lideres": 6, "cnpj": null, "cnpjNota": "Não possui", "inicio": "2013-01-01", "obra": "Sim", "imovel": "Próprio", "terreno": "Não", "terrenoDet": "", "notas": ["Cônjuge sem cadastro próprio: Jessica dos Santos Neres"], "resp": "2026-09-23T21:49", "nac": {"jurMM": true, "matricula": "2025.09.2040", "nome": "Ueber Souza de Sá", "grau": "Ministro Auxiliar", "funcao": "Missionário", "funcaoLocal": "", "igrejaCad": "IDPB Serra - Es", "jurisdicao": "Estado do Espírito Santo", "inclusao": "2025-09-01", "sexo": "Masculino", "estadoCivil": "Casado(a)", "nacionalidade": "Brasileira", "cidade": "Serra", "uf": "ES", "conjuge": "Jessica dos Santos Neres", "grauConj": "Ministro Auxiliar", "funcaoConj": "Missionária", "form2025": ["celular"]}, "conj": {"nome": "Jessica dos Santos Neres", "grau": "Ministro Auxiliar", "funcao": "Missionária", "sexo": "Feminino", "matricula": "", "estadoCivil": "Casado(a)", "fonte": "Ficha do cônjuge no Banco Nacional (sem cadastro próprio)", "proprio": 0, "cidade": "Serra", "uf": "ES", "form2025": ["CPF", "RG", "celular", "nascimento", "naturalidade"]}, "emailDTR": "[dado removido]"}, {"id": 40, "nome": "Emerson Lopes dos Santos", "igreja": "IDPB Jaraguá do Sul", "cidade": "Jaraguá do Sul", "estado": "SC", "pais": "Brasil", "regiao": "Região Sul", "supervisor": "Pr. Elias Torres", "membros": 0, "lideres": 0, "cnpj": null, "cnpjNota": "Não informado", "inicio": null, "obra": "—", "imovel": "—", "terreno": "—", "terrenoDet": "", "notas": [], "resp": null, "semRel": 1, "nac": {"jurMM": true, "matricula": "2019.10.0581", "nome": "Emerson Lopes dos Santos", "grau": "Ministro Cooperador", "funcao": "Pastor", "funcaoLocal": "Presidente Igreja Local", "igrejaCad": "Jaraguá do Sul/SC", "jurisdicao": "Santa Catarina", "inclusao": "2018-05-25", "sexo": "Masculino", "estadoCivil": "Casado(a)", "nacionalidade": "", "cidade": "Jaraguá do Sul", "uf": "SC", "conjuge": "Méssia Rodrigues dos Santos", "grauConj": "", "funcaoConj": "", "form2025": ["e-mail", "estado civil", "naturalidade"]}, "conj": {"jurMM": true, "matricula": "2018.05.2028", "nome": "Méssia Rodrigues dos Santos Lopes", "grau": "Ministro Auxiliar", "funcao": "Missonária", "funcaoLocal": "Ministro Auxiliar", "igrejaCad": "Jaraguá do Sul/SC", "jurisdicao": "Santa Catarina", "inclusao": "2018-05-25", "sexo": "Feminino", "estadoCivil": "Casado(a)", "nacionalidade": "", "cidade": "Jaraguá do Sul", "uf": "SC", "conjuge": "", "grauConj": "", "funcaoConj": "", "conjRec": {"jurMM": true, "matricula": "2019.10.0581", "nome": "Emerson Lopes dos Santos", "grau": "Ministro Cooperador", "funcao": "Pastor", "funcaoLocal": "Presidente Igreja Local", "igrejaCad": "Teresina", "jurisdicao": "Santa Catarina", "inclusao": "2018-05-25", "sexo": "Masculino", "estadoCivil": "", "nacionalidade": "", "cidade": "Jaragua do Sul", "uf": "SC", "conjuge": "Méssia Rodrigues dos Santos", "grauConj": "", "funcaoConj": ""}, "fonte": "Banco de Dados Nacional (MM)", "proprio": 1, "form2025": ["CEP", "celular", "e-mail", "endereço", "naturalidade"]}}, {"id": 41, "nome": "Cláudio Adão Gomes de Almeida", "igreja": "IDPB Missão Velha", "cidade": "Missão Velha", "estado": "CE", "pais": "Brasil", "regiao": "Região Nordeste 01", "supervisor": "Pr. Silvano", "membros": 0, "lideres": 0, "cnpj": null, "cnpjNota": "Não informado", "inicio": null, "obra": "—", "imovel": "—", "terreno": "—", "terrenoDet": "", "notas": ["Não encontrado no Cadastro Nacional"], "resp": null, "semRel": 1, "nac": null, "conj": {"nome": "Fabiana Maria da Silva de Almeida", "sexo": "Feminino", "matricula": "", "grau": "", "funcao": "", "cidade": "Missão Velha", "uf": "CE", "estadoCivil": "", "fonte": "Questionário DTR (sem cadastro no Banco Nacional)", "proprio": 0}, "dtr": 1}], "EXTRA": [{"jurMM": true, "matricula": "1992.11.0079", "nome": "Gilvan Santana Silva", "grau": "Ministro Licenciado", "funcao": "Pastor", "funcaoLocal": "Presidente Igreja Local", "igrejaCad": "Paratinga", "jurisdicao": "Estado da Bahia", "inclusao": "1992-11-01", "sexo": "Masculino", "estadoCivil": "Casado(a)", "nacionalidade": "Brasileira", "cidade": "Paratinga", "uf": "BA", "conjuge": "Maria Aparecida Santos Silva", "grauConj": "Ministro Cooperador", "funcaoConj": "Pastora", "conjRec": null, "dica": "A IDPB Paratinga hoje é dirigida pelo Pr. Odilon de Freitas Bezerra", "id": "n1992110079", "hist": 1}, {"jurMM": true, "matricula": "2016.01.2020", "nome": "Felipe Ribeiro da Silva", "grau": "Ministro Auxiliar", "funcao": "Missionário", "funcaoLocal": "Presidente Igreja Local", "igrejaCad": "IDPB Vitória - Es", "jurisdicao": "Estado do Espírito Santo", "inclusao": "2016-03-22", "sexo": "Masculino", "estadoCivil": "Casado(a)", "nacionalidade": "Brasileira", "cidade": "Serra/grande Vitória", "uf": "ES", "conjuge": "Lidiane Aparecida da Conceição Ferreira", "grauConj": "", "funcaoConj": "", "conjRec": {"jurMM": true, "matricula": "2016.01.2021", "nome": "Lidiane Aparecida da Conceição Ferreira", "grau": "Ministro Auxiliar", "funcao": "Missionária", "funcaoLocal": "Pastor(a) Auxiliar", "igrejaCad": "Vitória", "jurisdicao": "Estado do Espírito Santo", "inclusao": "2016-03-22", "sexo": "Feminino", "estadoCivil": "Casado(a)", "nacionalidade": "Brasileira", "cidade": "Serra/grande Vitoria", "uf": "ES", "conjuge": "Felipe Ribeiro da Silva", "grauConj": "", "funcaoConj": ""}, "dica": "A IDPB Vitória hoje é dirigida pela Pra. Rejane Severino da Conceição", "id": "n2016012020", "hist": 1}], "DRIVE": {"p": {}, "ig": {}}};
+const PRISTINE = JSON.stringify(RAW0);
+let RAW = RAW0, DATA = RAW.P, EXTRA = RAW.EXTRA;
+let NAC, AUXL, ATIVOS, CONJ, PESSOAS, pend, PEOPLE, SIDX;
+let OVR = {"mat-2010110315": {"kind": "pessoa", "nome": "Walcione Dias Goes", "fields": {"cidade": "Palhoça", "estadoCivil": "Casado(a)", "funcao": "Pastor", "funcaoLocal": "Presidente Igreja Local", "grau": "Ministro Ordenado", "inclusao": "2010-11-01", "jurisdicao": "Santa Catarina", "matricula": "2010.11.0315", "nacionalidade": "Brasileira", "nome": "Walcione Dias Goes", "sexo": "Masculino", "uf": "SC"}, "updatedAt": "2026-11-04T03:45:38.716Z"}, "mat-2012110374": {"kind": "pessoa", "nome": "Danielle Jefferson Soares", "fields": {"cidade": "Joinville", "estadoCivil": "Casado(a)", "funcao": "Pastora", "funcaoLocal": "Pastor(a) Auxiliar", "grau": "Ministro Ordenado", "inclusao": "2012-12-31", "jurisdicao": "Estado do Amazonas", "matricula": "2012.11.0374", "nacionalidade": "Brasileira", "nome": "Danielle Jefferson Soares", "sexo": "Feminino", "uf": "SC"}, "updatedAt": "2026-11-04T03:45:50.532Z"}, "mat-2012110376": {"kind": "pessoa", "nome": "Michael Lopes Soares", "fields": {"cidade": "Joinville", "estadoCivil": "Casado(a)", "funcao": "Pastor", "funcaoLocal": "Presidente Igreja Local", "grau": "Ministro Ordenado", "inclusao": "2012-12-31", "jurisdicao": "Estado do Amazonas", "matricula": "2012.11.0376", "nacionalidade": "Brasileira", "nome": "Michael Lopes Soares", "sexo": "Masculino", "uf": "SC"}, "updatedAt": "2026-11-04T04:00:00.000Z"}, "mat-2014010472": {"kind": "pessoa", "nome": "Giselle Marques Goes", "fields": {"cidade": "Palhoça", "estadoCivil": "Casado(a)", "funcao": "Pastora", "funcaoLocal": "Pastor(a) Auxiliar", "grau": "Ministro Ordenado", "inclusao": "2010-11-01", "jurisdicao": "Santa Catarina", "matricula": "2014.01.0472", "nacionalidade": "Brasileira", "nome": "Giselle Marques Goes", "sexo": "Feminino", "uf": "SC"}, "updatedAt": "2026-11-04T03:45:29.118Z"}}, EDIT = false, DB = null, USER = null, MYID = null;
+const DRIVE = RAW0.DRIVE || {p:{}, ig:{}};
+const driveBtn = (k, label) => DRIVE.p[k] ? `<a class="btn y" href="${DRIVE.p[k]}" target="_blank" rel="noopener">${icon('folder',16)} ${label||'Documentos no Drive'}</a>` : '';
+function deriveA(){
+NAC = DATA.filter(m => m.nac);
+AUXL = DATA.flatMap(m => (m.aux||[]).map((a,i) => ({...a, hostM:m, idx:i})));
+ATIVOS = EXTRA.filter(e => !e.hist);
+CONJ = DATA.filter(m => m.conj);
+PESSOAS = [];
+DATA.forEach(m => {
+  const base = { igreja:m.igreja, regiao:m.regiao, pais:m.pais, local:(m.pais==='Brasil'?`${m.cidade}/${m.estado}`:`${m.cidade}, ${m.pais}`), m };
+  PESSOAS.push({ ...base, nome:m.nome, papel:'Titular', ord:1, r:m.nac, href:'#m-'+m.id, k:m._tk });
+  if (m.conj) PESSOAS.push({ ...base, nome:m.conj.nome, papel:m.conj.papel || 'Cônjuge do titular', ord:2, r:m.conj, href:'#c-'+m.id, k:m._ck });
+  (m.aux||[]).forEach((a,i) => {
+    PESSOAS.push({ ...base, nome:a.nome, papel:'Auxiliar', ord:3, r:a, href:`#a-${m.id}-${i}`, k:a._k });
+    if (a.conjRec) PESSOAS.push({ ...base, nome:a.conjRec.nome, papel:'Auxiliar (cônjuge)', ord:4, r:a.conjRec, href:`#a-${m.id}-${i}c`, k:a.conjRec._k });
+  });
+});
+}
+const temCad = p => !!(p.r && p.r.matricula);
+const GRAUS = ['Ministro Ordenado','Ministro Licenciado','Ministro Cooperador','Ministro Auxiliar','Cônjuge'];
+const grauEf = p => (p.r && p.r.grau) || 'Ministro Auxiliar';
+const semGrau = p => !(p.r && p.r.grau);
+function quadroGrau(){
+  const PAP = [['Titulares',p=>p.ord===1],['Cônjuges',p=>p.ord===2],['Auxiliares',p=>p.ord>=3]];
+  const gs = GRAUS.concat([...new Set(PESSOAS.map(grauEf))].filter(g=>!GRAUS.includes(g)));
+  const max = Math.max(...gs.map(g=>PESSOAS.filter(p=>grauEf(p)===g).length));
+  const rows = gs.map(g => { const a = PESSOAS.filter(p=>grauEf(p)===g); return { g, a, n:a.length, cols:PAP.map(([,f])=>a.filter(f).length), sem:a.filter(semGrau).length }; }).filter(r=>r.n);
+  const nSem = PESSOAS.filter(semGrau).length;
+  return `<div class="tbl-wrap"><table class="grau"><thead><tr><th style="cursor:default">Grau ministerial</th>${PAP.map(([l])=>`<th class="num" style="cursor:default">${l}</th>`).join('')}<th class="num" style="cursor:default">Total</th><th style="cursor:default;min-width:180px"></th></tr></thead><tbody>
+   ${rows.map(r=>`<tr><td><a href="#ministros" data-grau="${esc(r.g)}">${esc(r.g)}</a>${r.sem?` <span class="muted" style="font-size:12.5px">(${r.sem} sem grau informado)</span>`:''}</td>${r.cols.map(c=>`<td class="num">${c||'<span class="muted">0</span>'}</td>`).join('')}<td class="num"><b>${r.n}</b></td><td><div class="bar" style="width:100%;height:10px" title="${r.n} de ${PESSOAS.length}"><i style="width:${r.n/max*100}%"></i></div></td></tr>`).join('')}
+  </tbody><tfoot><tr><td>Total</td>${PAP.map(([,f])=>`<td class="num">${PESSOAS.filter(f).length}</td>`).join('')}<td class="num">${PESSOAS.length}</td><td></td></tr></tfoot></table></div>
+  <p class="muted" style="margin:10px 0 0;font-size:13.5px">${nSem} pessoas sem grau preenchido foram contadas como Ministro Auxiliar. Clique em um grau para ver a lista.</p>`;
+}
+const TODAY = new Date();
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const fmtN = n => n == null ? '—' : n.toLocaleString('pt-BR');
+const fmtD = iso => { if (!iso) return '—'; const [y,m,d] = iso.split('-'); return `${d}/${m}/${y}`; };
+const years = iso => { if (!iso) return ''; const d = new Date(iso + 'T00:00'); let y = TODAY.getFullYear() - d.getFullYear(); if (TODAY < new Date(TODAY.getFullYear(), d.getMonth(), d.getDate())) y--; return y; };
+const initials = n => n.split(' ').filter(w => w.length > 2).slice(0, 2).map(w => w[0]).join('').toUpperCase();
+const norm = s => String(s).normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+const local = m => m.pais === 'Brasil' ? `${m.cidade}/${m.estado}` : `${m.cidade}, ${m.pais}`;
+const MESES = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+const REGIOES = ['Região Nordeste 01','Região Nordeste 02','Região Nordeste 03','Região Sudeste','Região Sul','Região Oeste','Internacional'];
+const byReg = r => DATA.filter(m => m.regiao === r);
+const sum = (a, k) => a.reduce((s, m) => s + (m[k] || 0), 0);
+const slug = s => norm(s).replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+
+const I = {
+  home:'<path d="M3 11 12 3l9 8v10h-6v-6H9v6H3z"/>',
+  users:'<circle cx="9" cy="8" r="3.5"/><path d="M2 20c0-3.5 3-6 7-6s7 2.5 7 6z"/><circle cx="17" cy="7" r="2.6"/><path d="M17 12c2.9 0 5 1.9 5 4.6V18h-4.3c-.2-2.3-1.2-4.3-2.8-5.7.6-.2 1.3-.3 2.1-.3z"/>',
+  map:'<path d="M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5Z"/>',
+  clip:'<path d="M9 2h6v2h3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h3zm0 7v2h2V9zm4 0v2h4V9zm-4 4v2h2v-2zm4 0v2h4v-2zm-4 4v2h2v-2zm4 0v2h4v-2z"/>',
+  alert:'<path d="M12 2 1 21h22zm-1 7h2v6h-2zm0 8h2v2h-2z"/>',
+  globe:'<path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm6.9 9h-3a15.6 15.6 0 0 0-1.4-6A8 8 0 0 1 18.9 11ZM12 4c.9 1.2 1.8 3.6 2 7h-4c.2-3.4 1.1-5.8 2-7ZM9.5 5a15.6 15.6 0 0 0-1.4 6h-3a8 8 0 0 1 4.4-6ZM5.1 13h3a15.6 15.6 0 0 0 1.4 6 8 8 0 0 1-4.4-6ZM12 20c-.9-1.2-1.8-3.6-2-7h4c-.2 3.4-1.1 5.8-2 7Zm2.5-1a15.6 15.6 0 0 0 1.4-6h3a8 8 0 0 1-4.4 6Z"/>',
+  back:'<path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm1 5.6L9.6 11H18v2H9.6l3.4 3.4-1.4 1.4L5.8 12l5.8-5.8z"/>',
+  card:'<path d="M2 5h20v14H2zm3 3v5h6V8zm8 0v2h6V8zm0 4v2h5v-2zm-8 3v1.5h6V15z"/>',
+  cake:'<path d="M12 2c1 1.2 1.5 2.1 1.5 2.8a1.5 1.5 0 0 1-3 0C10.5 4.1 11 3.2 12 2zm-1 5h2v3h5a2 2 0 0 1 2 2v3c-1.4 0-1.7 1-3 1s-1.6-1-3-1-1.6 1-3 1-1.6-1-3-1-1.6 1-3 1v-3a2 2 0 0 1 2-2h4zm-7 10.6c1.2-.1 1.7-.8 3-.8s1.6 1 3 1 1.6-1 3-1 1.6 1 3 1 1.6-1 3-1 1.8.7 3 .8V22H4z"/>',
+  build:'<path d="M3 21V9l9-6 9 6v12h-6v-7H9v7z"/>',
+  folder:'<path d="M3 5a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>',
+  pen:'<path d="M3 17.3V21h3.7L17.8 9.9l-3.7-3.7zM20.7 7a1 1 0 0 0 0-1.4l-2.3-2.3a1 1 0 0 0-1.4 0l-1.8 1.8 3.7 3.7z"/>',
+};
+const icon = (n, s = 18) => `<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">${I[n]}</svg>`;
+const pill = (t, k) => `<span class="pill p-${k}">${esc(t)}</span>`;
+const obraPill = o => pill(o, o === 'Sim' ? 'info' : (o === 'Não' || o === '—') ? 'mute' : 'warn');
+const imovPill = i => pill(i, i === 'Próprio' ? 'ok' : i === '—' ? 'mute' : 'warn');
+const cnpjCell = m => m.cnpj ? esc(m.cnpj) : pill(m.cnpjNota, m.cnpjNota === 'Não possui' ? 'mute' : 'warn');
+function deriveB(){ pend = DATA.filter(m => m.notas.length || m.terreno === 'Verificar'); }
+
+/* ---------- pessoas (ministros + cônjuges) ---------- */
+function deriveC(){ PEOPLE = [];
+DATA.forEach(m => { if (!m.nac) return;
+  PEOPLE.push({ nome:m.nac.nome, sexo:m.nac.sexo, nasc:m.nac.nasc, grau:m.nac.grau, vinc:m.igreja, href:'#m-'+m.id, cel:m.nac.celular });
+  if (m.conj) PEOPLE.push({ nome:m.conj.nome, sexo:m.conj.sexo, nasc:m.conj.nasc, grau:m.conj.grau || m.conj.funcao, vinc:'Cônjuge de '+m.nome, href:'#c-'+m.id, cel:m.conj.celular||'' });
+});
+AUXL.forEach(a => { PEOPLE.push({ nome:a.nome, sexo:a.sexo, nasc:a.nasc, grau:a.grau, vinc:'Auxiliar – '+a.hostM.igreja, href:`#a-${a.hostM.id}-${a.idx}`, cel:a.celular });
+  if (a.conjRec) PEOPLE.push({ nome:a.conjRec.nome, sexo:a.conjRec.sexo, nasc:a.conjRec.nasc, grau:a.conjRec.grau, vinc:'Auxiliar – '+a.hostM.igreja, href:`#a-${a.hostM.id}-${a.idx}c`, cel:a.conjRec.celular }); });
+ATIVOS.forEach(e => { PEOPLE.push({ nome:e.nome, sexo:e.sexo, nasc:e.nasc, grau:e.grau, vinc:e.igrejaCad || e.cidade, href:'#'+e.id, cel:e.celular, fora:1 });
+  if (e.conjRec) PEOPLE.push({ nome:e.conjRec.nome, sexo:e.conjRec.sexo, nasc:e.conjRec.nasc, grau:e.conjRec.grau, vinc:'Cônjuge de '+e.nome, href:'#'+e.id, cel:e.conjRec.celular, fora:1 }); });
+}
+const nextAge = iso => { const a = years(iso); const passed = TODAY.getMonth()*100+TODAY.getDate() >= (+iso.slice(5,7)-1)*100+(+iso.slice(8)); return passed ? a+1 : a; };
+const birthCols = [['_mes','Mês',0,p=>MESES[+p.nasc.slice(5,7)-1],p=>MESES[+p.nasc.slice(5,7)-1]],['_dia','Dia',1,p=>p.nasc.slice(8),p=>p.nasc.slice(8)],['nome','Nome',0,p=>`<a href="${p.href}">${esc(p.nome)}</a>${p.fora?' '+pill('fora do relatório','mute'):''}`],['grau','Grau / função'],['vinc','Vínculo'],['_nasc','Nascimento',0,p=>fmtD(p.nasc),p=>fmtD(p.nasc)],['_idade','Fará',1,p=>nextAge(p.nasc)+' anos',p=>nextAge(p.nasc)],['cel','Celular']];
+const birthRows = sx => () => PEOPLE.filter(p => p.sexo === sx && p.nasc).map(p => ({...p, _mes:p.nasc.slice(5,10), _dia:+p.nasc.slice(8)}));
+
+/* ---------- reports ---------- */
+const REPORTS = {
+  'censo-geral': { t:'Censo Geral', d:'Todos os pastores e missionários com membros e líderes informados no relatório 2026.1.', icon:'clip',
+    cols:[['nome','Pastor / Missionário',0,m=>`<a href="#m-${m.id}">${esc(m.nome)}</a>`],['igreja','Igreja'],['_local','Cidade',0,local,local],['regiao','Supervisão'],['membros','Membros',1],['lideres','Líderes',1]],
+    rows:()=>DATA, foot:r=>['Total', '', `${r.length} igrejas`, '', fmtN(sum(r,'membros')), fmtN(sum(r,'lideres'))], sort:['nome',1] },
+  'censo-regiao': { t:'Censo por Região', d:'Totais por supervisão regional.', icon:'map',
+    cols:[['regiao','Região',0,r=>`<a href="#reg-${slug(r.regiao)}">${esc(r.regiao)}</a>`],['supervisor','Supervisor'],['igrejas','Igrejas',1],['membros','Membros',1],['lideres','Líderes',1],['media','Média membros/igreja',1],['proprio','Imóvel próprio',1],['_bar','% membros',0,r=>`<div class="bar" title="${r.pct}% dos membros"><i style="width:${r.pct}%"></i></div>`,r=>r.pct+'%']],
+    rows:()=>{const tot=sum(DATA,'membros');return REGIOES.map(r=>{const a=byReg(r);return{regiao:r,supervisor:a[0].supervisor,igrejas:a.length,membros:sum(a,'membros'),lideres:sum(a,'lideres'),media:Math.round(sum(a,'membros')/a.length),proprio:a.filter(m=>m.imovel==='Próprio').length,pct:Math.round(sum(a,'membros')/tot*100)}})},
+    foot:r=>['Total','',fmtN(sum(r,'igrejas')),fmtN(sum(r,'membros')),fmtN(sum(r,'lideres')),Math.round(sum(r,'membros')/sum(r,'igrejas')),sum(r,'proprio'),''], sort:['membros',-1] },
+  'censo-idade': { t:'Censo Idade da Obra', d:'Há quanto tempo cada obra foi iniciada, da mais antiga para a mais recente.', icon:'clip',
+    cols:[['nome','Pastor / Missionário',0,m=>`<a href="#m-${m.id}">${esc(m.nome)}</a>`],['igreja','Igreja'],['inicio','Início da obra',0,m=>fmtD(m.inicio),m=>fmtD(m.inicio)],['_anos','Tempo',1,m=>years(m.inicio)+' anos',m=>years(m.inicio)],['membros','Membros',1]],
+    rows:()=>DATA.filter(m=>m.inicio).map(m=>({...m,_anos:years(m.inicio)})), sort:['inicio',1] },
+  'aniversario': { t:'Aniversário de Obra', d:'Datas de fundação agrupadas por mês, para preparar cartas e homenagens.', icon:'cake',
+    cols:[['_mes','Mês',0,m=>MESES[+m.inicio.slice(5,7)-1],m=>MESES[+m.inicio.slice(5,7)-1]],['_dia','Dia',1,m=>m.inicio.slice(8),m=>m.inicio.slice(8)],['igreja','Igreja'],['nome','Pastor / Missionário',0,m=>`<a href="#m-${m.id}">${esc(m.nome)}</a>`],['_anos','Completa',1,m=>{const a=years(m.inicio);const thisYear=TODAY.getMonth()*100+TODAY.getDate()< (+m.inicio.slice(5,7)-1)*100+(+m.inicio.slice(8));return (thisYear?a+1:a)+' anos'},null]],
+    rows:()=>DATA.filter(m=>m.inicio).map(m=>({...m,_mes:m.inicio.slice(5,10),_dia:+m.inicio.slice(8),_anos:years(m.inicio)})), sort:['_mes',1] },
+  'credencial': { t:'Credencial', d:'Matrícula, grau ministerial e jurisdição de todos os pastores e missionários no Cadastro Nacional.', icon:'card',
+    cols:[['nome','Nome',0,p=>`<a href="${p.href}">${esc(p.nome)}</a>`],['papel','Função na igreja'],['igreja','Igreja'],['_mat','Matrícula',0,p=>temCad(p)?esc(p.r.matricula):pill('Sem cadastro','bad'),p=>temCad(p)?p.r.matricula:'Sem cadastro'],['_grau','Grau ministerial',0,p=>esc(grauEf(p))+(semGrau(p)?' <span class="muted" title="Grau não preenchido">*</span>':''),grauEf],['_fun','Função',0,p=>esc(p.r&&p.r.funcao||'—'),p=>p.r&&p.r.funcao||''],['_jur','Jurisdição',0,p=>esc(p.r&&p.r.jurisdicao||'—'),p=>p.r&&p.r.jurisdicao||''],['_inc','Inclusão',0,p=>fmtD(p.r&&p.r.inclusao),p=>p.r&&p.r.inclusao||'']],
+    rows:()=>PESSOAS, sort:['_mat',1] },
+  'grau': { t:'Grau Ministerial', d:'Quantidade de pastores e missionários em cada grau ministerial. Quem não tem grau preenchido conta como Ministro Auxiliar.', icon:'card', html:quadroGrau, cols:[], rows:()=>[] },
+  'cadastro': { t:'Conferência com Cadastro Nacional', d:'Quem respondeu o relatório 2026.1 comparado com o Banco de Dados Nacional.', icon:'alert',
+    cols:[['nome','Nome',0,r=>`<a href="${r.href}">${esc(r.nome)}</a>`],['sit','Situação',0,r=>pill(r.sit,r.k)],['igreja','Igreja'],['obs','Observação',0,r=>`<span class="muted" style="white-space:normal;display:block;min-width:260px">${esc(r.obs)}</span>`]],
+    rows:()=>[...DATA.map(m=>({nome:m.nome,href:'#m-'+m.id,igreja:m.igreja,sit:m.nac?'Nos dois cadastros':'Sem Cadastro Nacional',k:m.nac?'ok':'bad',obs:m.nac?m.notas.filter(n=>/adastro/.test(n)).join('; '):'Pedir cadastro no Banco de Dados Nacional'})),
+      ...AUXL.flatMap(a=>[[a,''],...(a.conjRec?[[a.conjRec,'c']]:[])].map(([x,s])=>({nome:x.nome,href:`#a-${a.hostM.id}-${a.idx}${s}`,igreja:a.hostM.igreja,sit:x.matricula?'Auxiliar com cadastro':'Auxiliar sem cadastro',k:x.matricula?'info':'bad',obs:'Auxiliar de '+a.hostM.nome}))),
+      ...EXTRA.map(e=>({nome:e.nome,href:'#'+e.id,igreja:e.igrejaCad||e.cidade,sit:e.hist?'Registro antigo':'Só no Cadastro Nacional',k:e.hist?'mute':'warn',obs:e.dica||'Não respondeu o relatório 2026.1'}))], sort:['sit',-1] },
+  'imoveis': { t:'Situação dos Imóveis', d:'Templos próprios e alugados, com obras em andamento e terrenos adquiridos.', icon:'build',
+    cols:[['nome','Pastor / Missionário',0,m=>`<a href="#m-${m.id}">${esc(m.nome)}</a>`],['igreja','Igreja'],['imovel','Imóvel',0,m=>imovPill(m.imovel)],['obra','Em construção',0,m=>obraPill(m.obra)],['terreno','Terreno adquirido',0,m=>m.terreno==='Sim'?pill('Sim','ok'):m.terreno==='Verificar'?pill('Verificar','warn'):pill(m.terreno==='—'?'—':'Não','mute')],['terrenoDet','Detalhe do terreno',0,m=>`<span class="muted">${esc(m.terrenoDet)}</span>`]],
+    rows:()=>DATA, sort:['imovel',-1] },
+  'cnpj': { t:'Controle de CNPJ', d:'Situação de registro jurídico de cada igreja.', icon:'card',
+    cols:[['igreja','Igreja'],['nome','Pastor / Missionário',0,m=>`<a href="#m-${m.id}">${esc(m.nome)}</a>`],['_local','Cidade',0,local,local],['cnpj','CNPJ',0,cnpjCell,m=>m.cnpj||m.cnpjNota]],
+    rows:()=>DATA, sort:['cnpj',-1] },
+  'contatos': { t:'Lista de Contatos', d:'E-mails informados no formulário, por região.', icon:'users',
+    cols:[['nome','Pastor / Missionário',0,m=>`<a href="#m-${m.id}">${esc(m.nome)}</a>`],['regiao','Região'],['igreja','Igreja'],['email','E-mail']],
+    rows:()=>DATA, sort:['regiao',1] },
+  'pendencias': { t:'Pendências de Cadastro', d:'Respostas que precisam ser confirmadas com o pastor ou missionário.', icon:'alert',
+    cols:[['nome','Pastor / Missionário',0,m=>`<a href="#m-${m.id}">${esc(m.nome)}</a>`],['regiao','Região'],['_n','O que verificar',0,m=>pendList(m).map(esc).join('<br>'),m=>pendList(m).join('; ')]],
+    rows:()=>pend, sort:['regiao',1] },
+};
+function pendList(m){ const a=[...m.notas]; if(m.terreno==='Verificar') a.push('Terreno: '+m.terrenoDet); return a; }
+
+/* ---------- views ---------- */
+const state = { sort:{}, f:{reg:'',pais:'',papel:'',cad:'',grau:''} };
+try { Object.assign(state.f, JSON.parse(localStorage.getItem('sec-f') || '{}')); } catch(e) {}
+
+const NAV = () => [['inicio','Início','home'],['ministros','Pastores e Missionários','users'],['regioes','Regiões','map'],['relatorios','Relatórios','clip'],['r-pendencias','Pendências','alert',pend.length]];
+function renderNav(cur){
+  $('#nav').innerHTML = NAV().map(([h,t,i,c]) => `<a href="#${h}" ${cur===h?'aria-current="page"':''}>${icon(i)}${t}${c?`<span class="count">${c}</span>`:''}</a>`).join('');
+}
+const panel = (title, sub, body, back) => `<section class="panel"><div class="panel-head"><h1>${title}</h1>${back?`<a class="btn" href="${back}">${icon('back')} Voltar</a>`:''}${sub?`<p>${sub}</p>`:''}</div><div class="panel-body">${body}</div></section>`;
+
+function viewInicio(){
+  const paises = new Set(DATA.map(m=>m.pais)).size;
+  const kp = [[DATA.length,'Igrejas'],[PESSOAS.length,'Pastores e missionários'],[sum(DATA,'membros'),'Membros'],[sum(DATA,'lideres'),'Líderes'],[REGIOES.length,'Supervisões'],[paises,'Países'],[DATA.filter(m=>m.imovel==='Próprio').length,'Templos próprios'],[`${PESSOAS.filter(temCad).length}/${PESSOAS.length}`,'No Cadastro Nacional']];
+  const tiles = [['ministros','users','Pastores e Missionários',`${PESSOAS.length} pessoas em ${DATA.length} igrejas`],...(DRIVE.root?[[DRIVE.root,'folder','Documentos no Drive','pasta Secretaria de Missões']]:[]),['r-grau','card','Grau Ministerial',`${GRAUS.length} graus`],['regioes','map','Regiões',`${REGIOES.length} supervisões`],['relatorios','clip','Relatórios',`${Object.keys(REPORTS).length} relatórios prontos`],['r-pendencias','alert','Pendências',`${pend.length} cadastros a confirmar`],['r-cadastro','card','Cadastro Nacional',`${PESSOAS.filter(temCad).length} com cadastro · ${PESSOAS.length-PESSOAS.filter(temCad).length} sem cadastro`]];
+  return `<div class="kpis">${kp.map(([n,l])=>`<div class="kpi"><b>${fmtN(n)}</b><span>${l}</span></div>`).join('')}</div>`
+   + panel('Pastores e missionários por grau ministerial', `${PESSOAS.length} pessoas em ${DATA.length} igrejas.`, quadroGrau())
+   + panel('Secretaria de Missões','Relatório Estatístico MM 2026.1 (principal), complementado pelo Banco de Dados Nacional.',
+     `<div class="tiles">${tiles.map(([h,i,t,s])=>`<a class="tile" href="${h.startsWith('http')?h:'#'+h}"${h.startsWith('http')?' target="_blank" rel="noopener"':''}><span class="t">${icon(i)} ${t}</span><small>${s}</small></a>`).join('')}</div>`)
+   + panel('Supervisões','Clique em uma região para ver os ministros dela.',
+     `<div class="tiles">${REGIOES.map(r=>{const a=byReg(r);return `<a class="tile" href="#reg-${slug(r)}"><span class="t">${icon(r==='Internacional'?'globe':'map')} ${r}</span><small>${a[0].supervisor} · ${a.length} igrejas · ${fmtN(sum(a,'membros'))} membros</small></a>`}).join('')}</div>`);
+}
+
+function opts(id, label, vals, cur){ return `<label>${label}<select id="${id}"><option value="">Todos</option>${vals.map(v=>`<option ${v===cur?'selected':''}>${esc(v)}</option>`).join('')}</select></label>`; }
+function viewMinistros(){
+  const f = state.f;
+  const paises = [...new Set(DATA.map(m=>m.pais))].sort();
+  const PAP = ['Titular','Cônjuge do titular','Auxiliar','Auxiliar (cônjuge)'];
+  const papelOf = p => p.papel.startsWith('Pastora auxiliar') ? 'Cônjuge do titular' : p.papel;
+  const filt = `<div class="filters">${opts('f-reg','Supervisão',REGIOES,f.reg)}${opts('f-pais','País',paises,f.pais)}${opts('f-papel','Função na igreja',PAP,f.papel)}${opts('f-grau','Grau ministerial',GRAUS,f.grau)}${opts('f-cad','Cadastro Nacional',['Com cadastro','Sem cadastro'],f.cad)}<button class="btn" id="f-clear" type="button">Limpar filtros</button></div>`;
+  const rows = PESSOAS.filter(p=>(!f.reg||p.regiao===f.reg)&&(!f.pais||p.pais===f.pais)&&(!f.papel||papelOf(p)===f.papel)&&(!f.cad||(f.cad==='Com cadastro')===temCad(p))&&(!f.grau||grauEf(p)===f.grau));
+  const igs = new Set(rows.map(p=>p.igreja)).size;
+  const papPill = p => pill(p.papel, p.ord===1?'ok':p.ord===2?'info':'mute');
+  const def = { cols:[['nome','Nome',0,p=>`<a href="${p.href}">${esc(p.nome)}</a>`],['papel','Função na igreja',0,papPill,p=>p.papel],['igreja','Igreja',0,p=>`<a href="#m-${p.m.id}" style="font-weight:400">${esc(p.igreja)}</a>`,p=>p.igreja],['local','Cidade'],['regiao','Supervisão'],
+      ['_grau','Grau ministerial',0,p=>esc(grauEf(p))+(semGrau(p)?' <span class="muted" title="Grau não preenchido">*</span>':''),grauEf],['_mat','Cadastro Nacional',0,p=>temCad(p)?esc(p.r.matricula):pill('Sem cadastro','bad'),p=>temCad(p)?p.r.matricula:'Sem cadastro'],['_doc','Documentos',0,p=>DRIVE.p[p.k]?`<a class="copy" style="text-decoration:none" href="${DRIVE.p[p.k]}" target="_blank" rel="noopener">${icon('folder',13)} abrir</a>`:'',p=>DRIVE.p[p.k]||'']].concat(EDIT?[['_ed','Editar',0,p=>`<button class="copy" type="button" data-edit="${esc(p.k)}" aria-label="Editar ${esc(p.nome)}">${icon('pen',13)} editar</button>`,()=>'']]:[]),
+    rows:()=>rows, foot:r=>[`${r.length} pastores e missionários`,'',`${new Set(r.map(p=>p.igreja)).size} igrejas`,'','','',`${r.filter(temCad).length} com cadastro`,''].concat(EDIT?['']:[]), sort:['igreja',1] };
+  return panel('Pastores e Missionários', `${rows.length} pastores e missionários em ${igs} igrejas. Clique no nome para abrir a ficha, ou na igreja para ver os dados do relatório.${EDIT?' Use “editar” para alterar os dados.':''}`,
+    filt + `<div class="filters"><button class="btn y" type="button" data-copy="ministros">${icon('clip',16)} Copiar tabela</button></div>` + table('ministros', def));
+}
+function viewRegioes(){
+  return panel('Regiões e Supervisores','Cada supervisão com seus ministros, do maior para o menor número de membros.',
+    `<div class="groups">${REGIOES.map(r=>groupCard(r)).join('')}</div>`);
+}
+function groupCard(r){
+  const a = byReg(r).sort((x,y)=>y.membros-x.membros);
+  return `<div class="card group" id="g-${slug(r)}"><h2><a href="#reg-${slug(r)}" style="color:inherit">${r}</a></h2><div class="meta">${a[0].supervisor} · ${a.length} igrejas · ${fmtN(sum(a,'membros'))} membros · ${fmtN(sum(a,'lideres'))} líderes</div><ul>${a.map(m=>`<li><a href="#m-${m.id}"><span><b>${esc(m.nome)}</b><br><small style="text-align:left;display:block">${esc(m.igreja)}</small></span><small>${esc(local(m))}<br>${fmtN(m.membros)} membros</small></a></li>`).join('')}</ul></div>`;
+}
+function viewRegiao(s){
+  const r = REGIOES.find(x=>slug(x)===s); if(!r) return viewRegioes();
+  const a = byReg(r);
+  const def = { ...REPORTS['censo-geral'], cols: REPORTS['censo-geral'].cols.filter(c=>c[0]!=='regiao').concat([['imovel','Imóvel',0,m=>imovPill(m.imovel)],['obra','Em construção',0,m=>obraPill(m.obra)]]), rows:()=>a, foot:x=>['Total','',`${x.length} igrejas`,fmtN(sum(x,'membros')),fmtN(sum(x,'lideres')),'',''] };
+  const kp = [[a.length,'Igrejas'],[sum(a,'membros'),'Membros'],[sum(a,'lideres'),'Líderes'],[a.filter(m=>m.imovel==='Próprio').length,'Templos próprios'],[a.filter(m=>m.obra!=='Não').length,'Com obra']];
+  return `<div class="kpis">${kp.map(([n,l])=>`<div class="kpi"><b>${fmtN(n)}</b><span>${l}</span></div>`).join('')}</div>` + panel(r, `Supervisor: ${a[0].supervisor}`, table('reg-'+s, def), '#regioes');
+}
+
+function viewRelatorios(){
+  return panel('Relatórios','Cada relatório pode ser ordenado clicando no título da coluna e copiado para colar no Excel ou Google Planilhas.',
+    `<div class="tiles">${Object.entries(REPORTS).map(([k,r])=>`<a class="tile" href="#r-${k}"><span class="t">${icon(r.icon)} ${r.t}</span></a>`).join('')}</div>`, '#inicio');
+}
+function viewReport(k){
+  const r = REPORTS[k]; if(!r) return viewRelatorios();
+  if (r.html) return panel(r.t, r.d, r.html(), '#relatorios');
+  return panel(r.t, r.d, `<div class="filters"><button class="btn y" type="button" data-copy="${k}">${icon('clip',16)} Copiar tabela</button></div>` + table(k, r), '#relatorios');
+}
+
+function viewFicha(id){
+  const m = DATA.find(x=>x.id===+id); if(!m) return viewMinistros();
+  const peers = byReg(m.regiao).filter(x=>x.id!==m.id);
+  const row = (k,v) => `<dt>${k}</dt><dd>${v}</dd>`;
+  const notes = pendList(m);
+  return `<section class="panel"><div class="panel-head"><div class="idhead" style="flex:1 1 300px"><div class="avatar">${initials(m.nome)}</div><div style="min-width:0"><h1>${esc(m.nome)}</h1><div class="sub">${esc(m.igreja)} · ${esc(local(m))}</div></div></div><a class="btn" href="#ministros">${icon('back')} Voltar</a>${driveBtn(m._tk)}${editBtn(m._tk,'Editar pastor')}${editBtn(m._key,'Editar igreja')}<button class="btn y" type="button" data-ficha="${m.id}">${icon('clip',16)} Copiar ficha</button></div>
+  <div class="panel-body"><div class="prof">
+   <div class="card"><h3>Ministro</h3><dl>
+     ${row('Nome',esc(m.nome))}
+     ${row('E-mail',m.email?`${esc(m.email)}<button class="copy" data-txt="${esc(m.email)}">copiar</button>`:'—')}${m.emailDTR?row('E-mail (questionário DTR)',`${esc(m.emailDTR)}<button class="copy" data-txt="${esc(m.emailDTR)}">copiar</button>`):''}
+     ${row('Supervisão',`<a href="#reg-${slug(m.regiao)}" style="color:inherit">${esc(m.regiao)}</a>`)}
+     ${row('Supervisor',esc(m.supervisor))}
+     ${m.respPor?row('Relatório respondido por',esc(m.respPor)):''}${row('Relatório enviado',m.resp?new Date(m.resp).toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'}):pill('Não enviado – valores zerados','mute'))}
+   </dl></div>
+   <div class="card"><h3>Igreja</h3><dl>
+     ${row('Igreja',esc(m.igreja))}
+     ${row('Cidade',esc(m.cidade))}
+     ${row(m.pais==='Brasil'?'Estado':'Estado / Província',esc(m.estado))}
+     ${row('País',esc(m.pais))}
+     ${row('CNPJ',m.cnpj?`${esc(m.cnpj)}<button class="copy" data-txt="${esc(m.cnpj)}">copiar</button>`:cnpjCell(m))}
+     ${row('Início da obra',m.inicio?`${fmtD(m.inicio)} <span class="muted">(${years(m.inicio)} anos)</span>`:'—')}
+   </dl></div>
+   <div class="card"><h3>Censo 2026.1</h3><dl>
+     ${row('Membros',`<b style="font-size:20px">${fmtN(m.membros)}</b>`)}
+     ${row('Líderes',`<b style="font-size:20px">${fmtN(m.lideres)}</b>`)}
+     ${row('Membros por líder',m.lideres?(m.membros/m.lideres).toFixed(1).replace('.',','):'—')}
+   </dl></div>
+   <div class="card"><h3>Patrimônio</h3><dl>
+     ${row('Imóvel',imovPill(m.imovel))}
+     ${row('Em construção',obraPill(m.obra))}
+     ${row('Terreno adquirido',m.terreno==='Sim'?pill('Sim','ok'):m.terreno==='Verificar'?pill('Verificar','warn'):pill(m.terreno==='—'?'—':'Não','mute'))}
+     ${m.terrenoDet?row('Detalhe',esc(m.terrenoDet)):''}
+   </dl></div>
+   ${natCards(m.nac, m.conj?{...m.conj, href:'#c-'+m.id}:null)}
+   ${auxCard(m)}
+   ${notes.length?`<div class="card" style="grid-column:1/-1"><h3>Pendências desta ficha</h3><div class="notes">${notes.map(n=>`<div class="note">${esc(n)}</div>`).join('')}</div></div>`:''}
+   <div class="card" style="grid-column:1/-1"><h3>Outros ministros da ${esc(m.regiao)}</h3><div style="display:flex;flex-wrap:wrap;gap:8px">${peers.map(p=>`<a class="btn" style="font-size:14px;padding:5px 12px" href="#m-${p.id}">${esc(p.nome.split(' ').slice(0,2).join(' '))}</a>`).join('')}</div></div>
+  </div></div></section>`;
+}
+function natCards(n, c){
+  const row = (k,v) => v ? `<dt>${k}</dt><dd>${v}</dd>` : '';
+  const cp = v => v ? `${esc(v)}<button class="copy" data-txt="${esc(v)}">copiar</button>` : '';
+  if (!n) return `<div class="card" style="grid-column:1/-1"><h3>Cadastro Nacional</h3><p class="muted" style="margin:0">Este nome não foi encontrado no Banco de Dados Nacional. Confirme a grafia ou solicite o cadastro.</p></div>` + (c ? `<div class="card"><h3>Cônjuge</h3><dl>${row('Nome',c.href?`<a href="${c.href}" style="color:inherit">${esc(c.nome)}</a>`:esc(c.nome))}${row('E-mail',cp(c.email))}${row('Origem',esc(c.fonte||''))}</dl></div>` : '');
+  const end = [n.endereco, n.bairro].filter(Boolean).join(' – ');
+  return `<div class="card"><h3>Cadastro Nacional</h3><dl>
+     ${!n.matricula&&n.fonte?row('Origem',esc(n.fonte)):''}${row('Matrícula',cp(n.matricula))}${row('Grau ministerial',esc(n.grau))}${n.form2025?row('Atualização 2025',`<span class="muted">completado: ${esc(n.form2025.join(', '))}</span>`):''}${row('Função',esc(n.funcao))}${row('Na igreja local',esc(n.funcaoLocal))}
+     ${row('Jurisdição',esc(n.jurisdicao))}${row('Igreja no cadastro',esc(n.igrejaCad))}${row('Data de inclusão',n.inclusao?`${fmtD(n.inclusao)} <span class="muted">(${years(n.inclusao)} anos)</span>`:'')}
+   </dl></div>
+   <div class="card"><h3>Dados pessoais</h3><dl>
+     ${row('Nascimento',n.nasc?`${fmtD(n.nasc)} <span class="muted">(${years(n.nasc)} anos)</span>`:'')}${row('Sexo',esc(n.sexo))}${row('Estado civil',esc(n.estadoCivil)+(n.obsFalec?`<br><small class="muted">${esc(n.obsFalec)}</small>`:''))}
+     ${row('Naturalidade',esc(n.naturalidade))}${row('Nacionalidade',esc(n.nacionalidade))}${row('Profissão',esc(n.profissao))}
+     ${row('RG',cp(n.rg))}${row('CPF',cp(n.cpf))}
+   </dl></div>
+   <div class="card"><h3>Contato e endereço (cadastro)</h3><dl>
+     ${row('Celular',cp(n.celular))}${row('Telefone',cp(n.telefone))}${row('E-mail',cp(n.email)+(n.emailDTR?`<br><small class="muted">no questionário DTR: ${esc(n.emailDTR)}</small>`:'')+(n.emailAnt?`<br><small class="muted">antes no cadastro: ${esc(n.emailAnt)}</small>`:''))}
+     ${row('Endereço',esc(end))}${row('Cidade',esc([n.cidade,n.uf].filter(Boolean).join('/'))+(n.cidadeAnt&&n.cidadeAnt!=='/'&&norm(n.cidadeAnt)!==norm(n.cidade+'/'+n.uf)?`<br><small class="muted">antes no cadastro: ${esc(n.cidadeAnt)}</small>`:''))}${row('CEP',esc(n.cep))}
+   </dl></div>
+   <div class="card"><h3>Cônjuge</h3>${c?`<dl>
+     ${row('Nome',c.href?`<a href="${c.href}" style="color:inherit">${esc(c.nome)}</a>`:esc(c.nome))}${row('Matrícula',esc(c.matricula))}${row('Grau ministerial',esc(c.grau))}${row('Função',esc(c.funcao))}${row('Na igreja local',esc(c.funcaoLocal))}
+     ${row('Nascimento',c.nasc?`${fmtD(c.nasc)} <span class="muted">(${years(c.nasc)} anos)</span>`:'')}${row('Celular',cp(c.celular))}${row('E-mail',cp(c.email))}
+   </dl>`:`<p class="muted" style="margin:0">${esc(n.obsFalec||n.estadoCivil||'Sem cônjuge informado')}</p>`}</div>`;
+}
+function auxCard(m){
+  if (!m.aux) return '';
+  const row = (k,v) => v ? `<dt>${k}</dt><dd>${v}</dd>` : '';
+  const cp = v => v ? `${esc(v)}<button class="copy" data-txt="${esc(v)}">copiar</button>` : '';
+  const one = x => `<div style="min-width:0"><b>${esc(x.nome)}</b>${x.dtrNota?`<div class="note" style="margin-top:6px">${esc(x.dtrNota)}</div>`:''}${x.cidadeAnt?`<div class="muted" style="font-size:13px">Endereço do cadastro ainda é de ${esc(x.cidadeAnt)}</div>`:''}<dl style="margin-top:6px">${row('Matrícula',cp(x.matricula))}${row('Grau',esc(x.grau))}${row('Função',esc(x.funcaoLocal||x.funcao))}${row('Nascimento',x.nasc?`${fmtD(x.nasc)} <span class="muted">(${years(x.nasc)} anos)</span>`:'')}${row('Estado civil',esc(x.estadoCivil)+(x.obsFalec?`<br><small class="muted">${esc(x.obsFalec)}</small>`:''))}${row('Celular',cp(x.celular))}${row('E-mail',cp(x.email))}${row('RG',cp(x.rg))}${row('CPF',cp(x.cpf))}${row('Endereço',esc([x.endereco,x.bairro,x.cidade&&x.uf?x.cidade+'/'+x.uf:x.cidade,x.cep].filter(Boolean).join(', ')))}</dl></div>`;
+  return `<div class="card" style="grid-column:1/-1"><h3>Ministros auxiliares desta igreja</h3><div class="prof">${m.aux.flatMap((a,i)=>[[a,`#a-${m.id}-${i}`]].concat(a.conjRec?[[a.conjRec,`#a-${m.id}-${i}c`]]:[])).map(([x,h])=>one(x).replace(`<b>${esc(x.nome)}</b>`,`<a href="${h}" style="color:inherit"><b>${esc(x.nome)}</b></a>`)).join('')}</div></div>`;
+}
+function viewConjuges(){
+  const def = { cols:[['nome','Cônjuge',0,m=>`<a href="#c-${m.id}">${esc(m.conj.nome)}</a>`,m=>m.conj.nome],['_de','Cônjuge de',0,m=>`<a href="#m-${m.id}" style="font-weight:400">${esc(m.nome)}</a>`,m=>m.nome],['igreja','Igreja'],['regiao','Supervisão'],
+      ['_mat','Matrícula',0,m=>m.conj.matricula?esc(m.conj.matricula):pill('Sem cadastro próprio','warn'),m=>m.conj.matricula||'Sem cadastro próprio'],['_grau','Grau / função',0,m=>esc(m.conj.grau||m.conj.funcao||'—'),m=>m.conj.grau||m.conj.funcao||''],
+      ['_nasc','Nascimento',0,m=>fmtD(m.conj.nasc),m=>m.conj.nasc||''],['_cel','Celular',0,m=>esc(m.conj.celular||'—'),m=>m.conj.celular||''],['_rg','RG',0,m=>esc(m.conj.rg||'—'),m=>m.conj.rg||''],['_cpf','CPF',0,m=>esc(m.conj.cpf||'—'),m=>m.conj.cpf||'']],
+    rows:()=>CONJ, sort:['nome',1] };
+  const sem = CONJ.filter(m=>!m.conj.proprio);
+  return panel('Cônjuges', `${CONJ.length} cônjuges dos pastores e missionários do relatório 2026.1, com dados do Banco de Dados Nacional. ${sem.length} ainda sem cadastro próprio.`,
+    `<div class="filters"><button class="btn y" type="button" data-copy="conjuges">${icon('clip',16)} Copiar tabela</button></div>` + table('conjuges', def));
+}
+function viewConjuge(id){
+  const m = DATA.find(x=>x.id===+id); if(!m || !m.conj) return viewConjuges();
+  const c = m.conj, notes = [];
+  if (!c.proprio) notes.push((c.fonte||'').startsWith('Questionário') ? 'Cadastro criado a partir do questionário DTR. Não está no Banco de Dados Nacional; faltam matrícula, nascimento, RG, CPF e endereço.' : 'Sem cadastro próprio no Banco de Dados Nacional. Só o nome e o grau aparecem na ficha do cônjuge; faltam matrícula, nascimento, RG, CPF e contato.');
+  if (c.dtrNota) notes.push(c.dtrNota + '.');
+  if (c.nomeAlt) notes.push(`Na ficha de ${m.nome} o nome aparece como “${c.nomeAlt}”.`);
+  if (c.enderecoDoConj) notes.push(`Endereço copiado do cadastro de ${m.nome}.`);
+  return `<section class="panel"><div class="panel-head"><div class="idhead" style="flex:1 1 300px"><div class="avatar">${initials(c.nome)}</div><div style="min-width:0"><h1>${esc(c.nome)}</h1><div class="sub">Cônjuge de <a href="#m-${m.id}" style="color:inherit">${esc(m.nome)}</a> · ${esc(m.igreja)} · ${esc(local(m))}</div></div></div><a class="btn" href="#ministros">${icon('back')} Voltar</a>${driveBtn(m._ck)}${editBtn(m._ck,'Editar')}<button class="btn y" type="button" data-cficha="${m.id}">${icon('clip',16)} Copiar ficha</button></div>
+  <div class="panel-body"><div class="prof">
+   <div class="card" style="grid-column:1/-1"><h3>Origem dos dados</h3><p style="margin:0 0 ${notes.length?'10px':'0'}">${esc(c.fonte||'Banco de Dados Nacional')}</p>${notes.length?`<div class="notes">${notes.map(n=>`<div class="note">${esc(n)}</div>`).join('')}</div>`:''}</div>
+   ${natCards(c, m.nac ? {...m.nac, href:'#m-'+m.id} : {nome:m.nome, href:'#m-'+m.id})}
+  </div></div></section>`;
+}
+function conjText(m){
+  const c = m.conj;
+  return [c.nome, `Cônjuge de: ${m.nome} (${m.igreja})`, `Matrícula: ${c.matricula||'sem cadastro próprio'} · ${c.grau||c.funcao||''}`, `Nascimento: ${c.nasc?fmtD(c.nasc):'—'} · Celular: ${c.celular||'—'} · E-mail: ${c.email||'—'}`, `RG: ${c.rg||'—'} · CPF: ${c.cpf||'—'}`, `Endereço: ${[c.endereco,c.bairro,c.cidade&&c.uf?c.cidade+'/'+c.uf:c.cidade,c.cep].filter(Boolean).join(', ')||'—'}`].join('\n');
+}
+function viewAux(key){
+  const mm = key.match(/^(\d+)-(\d+)(c?)$/); if(!mm) return viewMinistros();
+  const m = DATA.find(x=>x.id===+mm[1]); const a = m && m.aux && m.aux[+mm[2]]; if(!a) return viewMinistros();
+  const x = mm[3] ? a.conjRec : a, other = mm[3] ? a : a.conjRec; if(!x) return viewMinistros();
+  const notes = [];
+  if (!x.matricula) notes.push((x.fonte||'').startsWith('Questionário') ? 'Cadastro criado a partir do questionário DTR. Não está no Banco de Dados Nacional.' : 'Não está no Banco de Dados Nacional.');
+  if (a.dtrNota) notes.push(a.dtrNota + '.');
+  return `<section class="panel"><div class="panel-head"><div class="idhead" style="flex:1 1 300px"><div class="avatar">${initials(x.nome)}</div><div style="min-width:0"><h1>${esc(x.nome)}</h1><div class="sub">${mm[3]?'Auxiliar (cônjuge)':'Auxiliar'} · <a href="#m-${m.id}" style="color:inherit">${esc(m.igreja)}</a> · titular ${esc(m.nome)}</div></div></div><a class="btn" href="#m-${m.id}">${icon('back')} Voltar</a>${driveBtn(x._k)}${editBtn(x._k,'Editar')}</div>
+  <div class="panel-body"><div class="prof">
+   <div class="card" style="grid-column:1/-1"><h3>Origem dos dados</h3><p style="margin:0 0 ${notes.length?'10px':'0'}">${esc(x.fonte||'Banco de Dados Nacional')}</p>${notes.length?`<div class="notes">${notes.map(n=>`<div class="note">${esc(n)}</div>`).join('')}</div>`:''}</div>
+   ${natCards(x, other ? {...other, href:`#a-${m.id}-${mm[2]}${mm[3]?'':'c'}`} : null)}
+  </div></div></section>`;
+}
+function viewExtra(id){
+  const e = EXTRA.find(x=>x.id===id); if(!e) return viewMinistros();
+  return `<section class="panel"><div class="panel-head"><div class="idhead" style="flex:1 1 300px"><div class="avatar">${initials(e.nome)}</div><div style="min-width:0"><h1>${esc(e.nome)}</h1><div class="sub">${esc(e.igrejaCad||'')} · ${esc([e.cidade,e.uf].filter(Boolean).join('/'))}</div></div></div><a class="btn" href="#r-cadastro">${icon('back')} Voltar</a></div>
+  <div class="panel-body"><div class="prof"><div class="card" style="grid-column:1/-1"><div class="note">${e.hist?'Registro antigo do Cadastro Nacional.':'Está no Cadastro Nacional, mas não respondeu o relatório 2026.1.'}${e.dica?' '+esc(e.dica)+'.':''}</div></div>${natCards(e, e.conjRec)}</div></div></section>`;
+}
+function fichaText(m){
+  return [`${m.nome}`,`Igreja: ${m.igreja}`,`Local: ${local(m)} – ${m.pais}`,`Supervisão: ${m.regiao} (${m.supervisor})`,`E-mail: ${m.email}`,`CNPJ: ${m.cnpj||m.cnpjNota}`,`Início da obra: ${fmtD(m.inicio)}`,`Membros: ${m.membros} · Líderes: ${m.lideres}`,`Imóvel: ${m.imovel} · Em construção: ${m.obra} · Terreno: ${m.terreno}${m.terrenoDet?' ('+m.terrenoDet+')':''}`].concat(m.nac?[`Matrícula: ${m.nac.matricula} · ${m.nac.grau} · ${m.nac.funcao}`,`Nascimento: ${m.nac.nasc?fmtD(m.nac.nasc):'—'} · Celular: ${m.nac.celular||'—'}`,`RG: ${m.nac.rg||'—'} · CPF: ${m.nac.cpf||'—'}`,`Endereço: ${[m.nac.endereco,m.nac.bairro,m.nac.cidade+'/'+m.nac.uf,m.nac.cep].filter(Boolean).join(', ')}`,`Cônjuge: ${m.conj?m.conj.nome:'—'}`]:['Sem Cadastro Nacional']).join('\n');
+}
+
+/* ---------- table ---------- */
+const TABLES = {};
+function table(key, def){
+  const [sk, sd] = state.sort[key] || def.sort || [def.cols[0][0], 1];
+  const col = def.cols.find(c=>c[0]===sk);
+  const val = (m,c) => c[4] ? c[4](m) : m[c[0]];
+  let rows = [...def.rows()];
+  if (col) rows.sort((a,b)=>{ let x=val(a,col), y=val(b,col); if(c_num(col)) return ((x??-1)-(y??-1))*sd; return norm(x??'').localeCompare(norm(y??''),'pt')*sd || ((a.ord||0)-(b.ord||0)); });
+  TABLES[key] = { def, rows };
+  const head = def.cols.map(c=>`<th class="${c[2]?'num':''}" data-sort="${key}|${c[0]}" aria-sort="${c[0]===sk?(sd>0?'ascending':'descending'):'none'}">${c[1]}${c[0]===sk?(sd>0?' ▲':' ▼'):''}</th>`).join('');
+  const body = rows.map(m=>`<tr>${def.cols.map(c=>`<td class="${c[2]?'num':''}">${c[3]?c[3](m):c[2]?fmtN(m[c[0]]):esc(m[c[0]])}</td>`).join('')}</tr>`).join('');
+  const foot = def.foot ? `<tfoot><tr>${def.foot(rows).map((v,i)=>`<td class="${def.cols[i][2]?'num':''}">${v}</td>`).join('')}</tr></tfoot>` : '';
+  return `<div class="tbl-wrap"><table><thead><tr>${head}</tr></thead><tbody>${body}</tbody>${foot}</table></div>`;
+}
+function c_num(c){ return !!c[2]; }
+function tableTSV(key){
+  const { def, rows } = TABLES[key];
+  const txt = c => (s => String(s ?? '').replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim())(c);
+  const lines = [def.cols.map(c=>c[1]).join('\t')].concat(rows.map(m=>def.cols.map(c=>c[4]!==undefined&&c[4]!==null?txt(c[4](m)):c[3]?txt(c[3](m)):txt(m[c[0]])).join('\t')));
+  return lines.join('\n');
+}
+
+/* ---------- router ---------- */
+function route(){
+  const h = (location.hash || '#inicio').slice(1);
+  let html, cur = h;
+  if (h === 'ministros') html = viewMinistros();
+  else if (h === 'regioes') html = viewRegioes();
+  else if (h.startsWith('reg-')) { html = viewRegiao(h.slice(4)); cur = 'regioes'; }
+  else if (h === 'relatorios') html = viewRelatorios();
+  else if (h.startsWith('r-')) { html = viewReport(h.slice(2)); cur = h === 'r-pendencias' ? h : 'relatorios'; }
+  else if (h.startsWith('m-')) { html = viewFicha(h.slice(2)); cur = 'ministros'; }
+  else if (h === 'conjuges') { html = viewMinistros(); cur = 'ministros'; }
+  else if (h.startsWith('a-')) { html = viewAux(h.slice(2)); cur = 'ministros'; }
+  else if (h.startsWith('c-')) { html = viewConjuge(h.slice(2)); cur = 'ministros'; }
+  else if (h.startsWith('n')) { html = viewExtra(h); cur = 'relatorios'; }
+  else { html = viewInicio(); cur = 'inicio'; }
+  $('#main').innerHTML = html; renderNav(cur); $('#app').classList.remove('open');
+}
+function rerender(){ const y = scrollY; route(); scrollTo(0, y); }
+addEventListener('hashchange', () => { route(); scrollTo(0, 0); });
+
+function toast(t){ const el = $('#toast'); el.textContent = t; el.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(()=>el.hidden = true, 1800); }
+async function copy(t, ok){
+  try { await navigator.clipboard.writeText(t); toast(ok); }
+  catch(e){ const ta = document.createElement('textarea'); ta.value = t; document.body.appendChild(ta); ta.select(); let done = false; try { done = document.execCommand('copy'); } catch(_){} ta.remove(); toast(done ? ok : 'Não foi possível copiar neste navegador'); }
+}
+document.addEventListener('click', e => {
+  const th = e.target.closest('th[data-sort]');
+  if (th) { const [k, c] = th.dataset.sort.split('|'); const cur = state.sort[k] || TABLES[k].def.sort || []; state.sort[k] = [c, cur[0] === c ? -cur[1] : 1]; rerender(); return; }
+  const gl = e.target.closest('[data-grau]'); if (gl) { state.f = {reg:'',pais:'',papel:'',cad:'',grau:gl.dataset.grau}; saveF(); if (location.hash === '#ministros') { e.preventDefault(); rerender(); } return; }
+  const cp = e.target.closest('[data-copy]'); if (cp) { copy(tableTSV(cp.dataset.copy), 'Tabela copiada. Cole no Excel ou Planilhas.'); return; }
+  const fi = e.target.closest('[data-ficha]'); if (fi) { copy(fichaText(DATA.find(m=>m.id===+fi.dataset.ficha)), 'Ficha copiada'); return; }
+  const cf = e.target.closest('[data-cficha]'); if (cf) { copy(conjText(DATA.find(m=>m.id===+cf.dataset.cficha)), 'Ficha copiada'); return; }
+  const tx = e.target.closest('[data-txt]'); if (tx) { copy(tx.dataset.txt, 'Copiado'); return; }
+  if (e.target.id === 'f-clear') { state.f = {reg:'',pais:'',papel:'',cad:'',grau:''}; saveF(); rerender(); }
+  if (!e.target.closest('.search')) $('#results').hidden = true;
+});
+function saveF(){ try { localStorage.setItem('sec-f', JSON.stringify(state.f)); } catch(e) {} }
+document.addEventListener('change', e => {
+  const map = {'f-reg':'reg','f-pais':'pais','f-papel':'papel','f-cad':'cad','f-grau':'grau'};
+  if (map[e.target.id]) { state.f[map[e.target.id]] = e.target.value; saveF(); rerender(); }
+});
+$('#burger').onclick = () => $('#app').classList.toggle('open');
+$('#scrim').onclick = () => $('#app').classList.remove('open');
+
+/* ---------- search ---------- */
+const q = $('#q'), res = $('#results'); let sel = 0, hits = [];
+function deriveD(){ SIDX = DATA.map(m => ({ nome:m.nome, href:'#m-'+m.id, sub:`${m.igreja} · ${local(m)} · ${m.regiao}`, t:norm([m.nome,m.igreja,m.cidade,m.estado,m.pais,m.regiao,m.supervisor,m.email,m.nac?.matricula,m.nac?.nome].join(' ')) }))
+  .concat(CONJ.map(m => ({ nome:m.conj.nome, href:'#c-'+m.id, sub:`Cônjuge de ${m.nome} · ${m.igreja}`, t:norm([m.conj.nome,m.conj.matricula,m.conj.nomeAlt,m.conj.cpf].join(' ')) })))
+  .concat(AUXL.flatMap(a => [[a,''],...(a.conjRec?[[a.conjRec,'c']]:[])].map(([x,s]) => ({ nome:x.nome, href:`#a-${a.hostM.id}-${a.idx}${s}`, sub:`Ministro auxiliar · ${a.hostM.igreja}`, t:norm([x.nome,x.matricula].join(' ')) }))))
+  .concat(EXTRA.flatMap(e => [{ nome:e.nome, href:'#'+e.id, sub:`${e.hist?'Registro antigo':'Só no Cadastro Nacional'} · ${e.igrejaCad||e.cidade}`, t:norm([e.nome,e.matricula,e.igrejaCad,e.cidade].join(' ')) }].concat(e.conjRec?[{ nome:e.conjRec.nome, href:'#'+e.id, sub:`Cônjuge de ${e.nome}`, t:norm(e.conjRec.nome) }]:[])));}
+function search(){
+  const t = norm(q.value.trim());
+  if (!t) { res.hidden = true; return; }
+  hits = SIDX.filter(x => x.t.includes(t)).slice(0, 12);
+  sel = 0;
+  res.innerHTML = hits.length ? hits.map((x,i)=>`<a href="${x.href}" class="${i===sel?'sel':''}"><b>${esc(x.nome)}</b><br><small>${esc(x.sub)}</small></a>`).join('') : '<a><small>Nenhum resultado</small></a>';
+  res.hidden = false;
+}
+q.addEventListener('input', search);
+q.addEventListener('focus', search);
+q.addEventListener('keydown', e => {
+  if (res.hidden || !hits.length) return;
+  if (e.key === 'ArrowDown' || e.key === 'ArrowUp') { e.preventDefault(); sel = (sel + (e.key === 'ArrowDown' ? 1 : -1) + hits.length) % hits.length; [...res.children].forEach((a,i)=>a.classList.toggle('sel', i===sel)); }
+  if (e.key === 'Enter') { location.hash = hits[sel].href; res.hidden = true; q.blur(); }
+  if (e.key === 'Escape') res.hidden = true;
+});
+res.addEventListener('click', e => { if (e.target.closest('a[href]')) { res.hidden = true; q.value = ''; } });
+/* ---------- edição (salva no banco compartilhado da página) ---------- */
+const pk = (r, n) => r && r.matricula ? 'mat-' + r.matricula.replace(/[^0-9A-Za-z]/g, '') : 'nome-' + slug(n || 'sem-nome');
+function assignKeys(d){
+  d.P.forEach(m => {
+    m._key = 'ig-' + slug(m.igreja);
+    m._tk = pk(m.nac, m.nome);
+    if (m.conj) { m._ck = pk(m.conj, m.conj.nome); m.conj._k = m._ck; }
+    (m.aux||[]).forEach(a => { a._k = pk(a, a.nome); if (a.conjRec) a.conjRec._k = pk(a.conjRec, a.conjRec.nome); });
+  });
+}
+function findTarget(key){
+  for (const m of DATA) {
+    if (m._key === key) return { kind:'igreja', m, label:m.igreja };
+    if (m._tk === key) return { kind:'pessoa', m, role:'titular', r:m.nac, label:m.nome };
+    if (m.conj && m._ck === key) return { kind:'pessoa', m, role:'conjuge', r:m.conj, label:m.conj.nome };
+    for (const a of (m.aux||[])) {
+      if (a._k === key) return { kind:'pessoa', m, role:'auxiliar', r:a, label:a.nome };
+      if (a.conjRec && a.conjRec._k === key) return { kind:'pessoa', m, role:'auxiliar', r:a.conjRec, label:a.conjRec.nome };
+    }
+  }
+  return null;
+}
+const NUMF = ['membros','lideres'];
+function applyOne(key, f){
+  const t = findTarget(key); if (!t || !f) return;
+  if (t.kind === 'igreja') {
+    const m = t.m;
+    for (const [k,v] of Object.entries(f)) m[k] = NUMF.includes(k) ? (v === '' || v == null ? 0 : +v) : (v === '' && k === 'inicio' ? null : v);
+    if (f.cnpj) m.cnpjNota = null; else if (!m.cnpjNota) m.cnpjNota = 'Não informado';
+    m._editado = 1; return;
+  }
+  let r = t.r;
+  if (!r && t.role === 'titular') { r = t.m.nac = { fonte:'Editado na Secretaria' }; }
+  for (const [k,v] of Object.entries(f)) r[k] = (k === 'nasc' || k === 'inclusao') && !v ? null : v;
+  r._editado = 1;
+  if (t.role === 'titular') {
+    if (f.nome) t.m.nome = f.nome;
+    if ('email' in f) t.m.email = f.email;
+    if (f.matricula) t.m.notas = t.m.notas.filter(n => n !== 'Não encontrado no Cadastro Nacional');
+  }
+}
+function applyAll(){
+  RAW = JSON.parse(PRISTINE); assignKeys(RAW);
+  DATA = RAW.P; EXTRA = RAW.EXTRA;
+  for (const [k, d] of Object.entries(OVR)) applyOne(k, d && d.fields);
+  deriveA(); deriveB(); deriveC(); deriveD();
+}
+
+const ESTCIV = ['Casado(a)','Solteiro(a)','Viúvo(a)','Divorciado(a)'];
+const PFIELDS = [
+  ['Identificação', [['nome','Nome completo','text',null,1],['sexo','Sexo','select',['Masculino','Feminino']],['nasc','Data de nascimento','date'],['estadoCivil','Estado civil','select',ESTCIV],['naturalidade','Naturalidade','text'],['nacionalidade','Nacionalidade','text'],['profissao','Profissão','text']]],
+  ['Documentos', [['rg','RG','text'],['cpf','CPF','text']]],
+  ['Ministério', [['matricula','Matrícula','text'],['grau','Grau ministerial','select',['Ministro Ordenado','Ministro Licenciado','Ministro Cooperador','Ministro Auxiliar','Cônjuge']],['funcao','Função ministerial','text'],['funcaoLocal','Função na igreja local','text'],['jurisdicao','Jurisdição','text'],['inclusao','Data de inclusão','date']]],
+  ['Contato e endereço', [['celular','Celular','tel'],['telefone','Telefone','tel'],['email','E-mail','email'],['endereco','Endereço','text',null,1],['bairro','Bairro','text'],['cep','CEP','text'],['cidade','Cidade','text'],['uf','UF / País','text']]],
+];
+const IFIELDS = [
+  ['Igreja', [['igreja','Nome da igreja','text',null,1],['cidade','Cidade','text'],['estado','Estado / província','text'],['cnpj','CNPJ','text'],['inicio','Início da obra','date']]],
+  ['Censo', [['membros','Membros','number'],['lideres','Líderes','number']]],
+  ['Patrimônio', [['imovel','Imóvel','select',['Próprio','Alugado','—']],['obra','Em construção','select',['Sim','Não','Em acabamento','Em preparação','—']],['terreno','Terreno adquirido','select',['Sim','Não','Verificar','—']],['terrenoDet','Detalhe do terreno','text',null,1]]],
+];
+let EDKEY = null, EDLAST = null;
+function fieldHTML([k,label,type,optsL,wide], v){
+  v = v ?? '';
+  const id = 'ed-' + k;
+  let ctl;
+  if (type === 'select') { const o = optsL.includes(v) || v === '' ? optsL : [v, ...optsL]; ctl = `<select id="${id}" name="${k}"><option value="">—</option>${o.map(x=>`<option ${x===v?'selected':''}>${esc(x)}</option>`).join('')}</select>`; }
+  else ctl = `<input id="${id}" name="${k}" type="${type}" value="${esc(v)}" ${type==='number'?'min="0" step="1" inputmode="numeric"':''} autocomplete="off">`;
+  return `<label class="fld${wide?' wide':''}" for="${id}"><span>${label}</span>${ctl}</label>`;
+}
+async function openEditor(key){
+  const t = findTarget(key); if (!t) { toast('Não encontrei esse cadastro'); return; }
+  EDKEY = key; EDLAST = document.activeElement;
+  const src = t.kind === 'igreja' ? t.m : (t.r || {});
+  const vals = t.kind === 'pessoa' && t.role === 'titular' ? { ...src, nome: t.m.nome, email: (src.email || t.m.email) } : src;
+  const groups = t.kind === 'igreja' ? IFIELDS : PFIELDS;
+  const roleTxt = t.kind === 'igreja' ? 'Dados da igreja' : ({titular:'Titular', conjuge:'Cônjuge', auxiliar:'Auxiliar'})[t.role] + ' · ' + t.m.igreja;
+  const ov = OVR[key];
+  let quem = '';
+  if (ov && ov.updatedAt) {
+    let nome = '';
+    try { if (USER && ov.by) { const ps = await USER.profiles([ov.by]); nome = ps[ov.by] && ps[ov.by].name || ''; } } catch(e) {}
+    quem = `Última alteração em ${new Date(ov.updatedAt).toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'})}${nome ? ' por ' + esc(nome) : ''}.`;
+  }
+  $('#modal-box').innerHTML = `<form id="edform" novalidate>
+    <div class="mhead"><div style="min-width:0"><small>${esc(roleTxt)}</small><h2 id="modal-title">Editar ${esc(t.label)}</h2></div><button type="button" class="mclose" data-close aria-label="Fechar">×</button></div>
+    <div class="mbody">${groups.map(([g, fs]) => `<fieldset><legend>${g}</legend><div class="fgrid">${fs.map(f => fieldHTML(f, vals[f[0]])).join('')}</div></fieldset>`).join('')}
+    ${quem ? `<p class="muted" style="margin:0;font-size:13px">${quem}</p>` : ''}<p class="err" id="ed-err" hidden></p></div>
+    <div class="mfoot"><span style="flex:1"></span><button type="button" class="btn" data-close>Cancelar</button><button type="submit" class="btn y" id="ed-save">Salvar alterações</button></div>
+  </form>`;
+  $('#modal').hidden = false; document.body.style.overflow = 'hidden';
+  const first = $('#modal-box input, #modal-box select'); if (first) first.focus();
+}
+function closeEditor(){
+  $('#modal').hidden = true; document.body.style.overflow = ''; EDKEY = null;
+  if (EDLAST && EDLAST.focus) try { EDLAST.focus(); } catch(e) {}
+}
+async function saveEditor(e){
+  e.preventDefault();
+  const t = findTarget(EDKEY); if (!t || !DB) return;
+  const fd = new FormData($('#edform')); const fields = {};
+  for (const [k,v] of fd.entries()) fields[k] = String(v).trim();
+  const err = $('#ed-err');
+  if (t.kind === 'pessoa' && !fields.nome) { err.textContent = 'Preencha o nome completo.'; err.hidden = false; $('#ed-nome').focus(); return; }
+  if (t.kind === 'igreja' && !fields.igreja) { err.textContent = 'Preencha o nome da igreja.'; err.hidden = false; $('#ed-igreja').focus(); return; }
+  const d = fields.cpf ? fields.cpf.replace(/\D/g,'') : '';
+  if (d.length === 11 && !/[.-]/.test(fields.cpf)) fields.cpf = `${d.slice(0,3)}.${d.slice(3,6)}.${d.slice(6,9)}-${d.slice(9)}`;
+  const btn = $('#ed-save'); btn.disabled = true; btn.textContent = 'Salvando…';
+  const key = EDKEY;
+  const doc = { kind:t.kind, nome:(t.kind==='igreja'?fields.igreja:fields.nome), fields, updatedAt:new Date().toISOString(), by:MYID || '' };
+  try {
+    await DB.collection('edicoes').doc(key).set(doc);
+    OVR[key] = doc; applyAll(); closeEditor(); rerender(); toast('Alterações salvas');
+  } catch(ex) {
+    btn.disabled = false; btn.textContent = 'Salvar alterações';
+    err.textContent = ex && ex.code === 'permission_denied' ? 'Você não tem permissão para editar. Peça acesso de edição ao dono da página.' : 'Não foi possível salvar agora. Verifique a conexão e tente de novo.';
+    err.hidden = false;
+  }
+}
+const editBtn = (k, label) => EDIT && k ? `<button class="btn ed" type="button" data-edit="${esc(k)}">${icon('pen',16)} ${label}</button>` : '';
+document.addEventListener('click', e => {
+  const ed = e.target.closest('[data-edit]'); if (ed) { e.preventDefault(); openEditor(ed.dataset.edit); return; }
+  if (e.target.closest('[data-close]') || e.target.id === 'modal') { closeEditor(); return; }
+});
+document.addEventListener('submit', e => { if (e.target.id === 'edform') saveEditor(e); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('#modal').hidden) closeEditor(); });
+
+async function initDb(){
+  return;
+  try {
+    const [db, user] = await Promise.all([claude.use('db'), claude.use('user')]);
+    DB = db; USER = user;
+    if (user) { try { MYID = await user.id(); } catch(e) {} try { EDIT = !!db && await user.canEdit(); } catch(e) { EDIT = false; } }
+    if (!db) { rerender(); return; }
+    db.collection('edicoes').onSnapshot(snap => {
+      const o = {}; snap.docs.forEach(d => { o[d.id] = d.data(); });
+      OVR = o; applyAll(); rerender();
+    }, () => { toast('As alterações salvas não puderam ser carregadas agora'); });
+    rerender();
+  } catch(e) {}
+}
+
+applyAll();
+route();
+initDb();
+</script>
+
+</body>
+</html>
