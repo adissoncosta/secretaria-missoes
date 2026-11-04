@@ -415,7 +415,7 @@ function pendAtiva(m, n){
   if ((x = n.match(/^Auxiliar sem Cadastro Nacional: (.+)$/))) return (m.aux||[]).flatMap(a => [a, a.conjRec]).some(a => a && nrm(a.nome) === nrm(x[1]) && !a.matricula);
   if ((x = n.match(/^Jurisdição no Cadastro Nacional: (.+?) \(não está/))) return nrm(nac.jurisdicao) === nrm(x[1]);
   if (/^Endereço do cadastro \(rua e CEP\) ainda é de Manaus/.test(n)) return nac.cep != null && nac.cep !== '' ? /^69/.test(dig(nac.cep)) : !!nac._cep69;
-  if ((x = n.match(/^CNPJ igual ao de (.+)$/))) { const o = DATA.find(y => nrm(y.nome) === nrm(x[1])); return !!(o && dig(o.cnpj) && dig(o.cnpj) === dig(m.cnpj)); }
+  if (/^CNPJ igual ao de /.test(n)) return false; // CNPJ repetido não é pendência (decisão da secretaria)
   return true;
 }
 function pendList(m){ const a = m.notas.filter(n => pendAtiva(m, n)); if (m.terreno === 'Verificar') a.push('Terreno: ' + m.terrenoDet); return a; }
