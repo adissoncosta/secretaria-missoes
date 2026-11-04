@@ -1,5 +1,6 @@
 {
  "mat-2010110315": {
+  "conferir": [],
   "fields": {
    "_cep69": false,
    "cidade": "Palhoça",
@@ -20,6 +21,7 @@
   "updatedAt": "2026-11-04T03:45:38.716Z"
  },
  "mat-2012110374": {
+  "conferir": [],
   "fields": {
    "_cep69": false,
    "cidade": "Joinville",
@@ -40,6 +42,7 @@
   "updatedAt": "2026-11-04T03:45:50.532Z"
  },
  "mat-2012110376": {
+  "conferir": [],
   "fields": {
    "_cep69": false,
    "cidade": "Joinville",
@@ -60,6 +63,7 @@
   "updatedAt": "2026-11-04T04:00:00.000Z"
  },
  "mat-2014010472": {
+  "conferir": [],
   "fields": {
    "_cep69": false,
    "cidade": "Palhoça",
