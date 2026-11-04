@@ -17,6 +17,6 @@ if __name__=='__main__':
     ovr={}
     for f in sorted(glob.glob(os.path.join(src,'edicoes','*.json'))):
         d=json.load(open(f)); k=os.path.basename(f)[:-5]
-        ovr[k]={'kind':d.get('kind'),'nome':d.get('nome'),'fields':scrub(d.get('fields') or {}),'updatedAt':d.get('updatedAt')}
+        ovr[k]={'kind':d.get('kind'),'nome':d.get('nome'),'fields':scrub(d.get('fields') or {}),'updatedAt':d.get('updatedAt'),'conferir':scrub(d.get('conferir') or [])}
     json.dump(ovr,open(dst,'w'),ensure_ascii=False,indent=1,sort_keys=True)
     print(len(ovr),'edições')

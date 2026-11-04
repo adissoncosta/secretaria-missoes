@@ -734,7 +734,10 @@ function applyOne(key, f){
 function applyAll(){
   RAW = JSON.parse(PRISTINE); assignKeys(RAW);
   DATA = RAW.P; EXTRA = RAW.EXTRA;
-  for (const [k, d] of Object.entries(OVR)) applyOne(k, d && d.fields);
+  for (const [k, d] of Object.entries(OVR)) {
+    applyOne(k, d && d.fields);
+    if (d && Array.isArray(d.conferir) && d.conferir.length) { const t = findTarget(k); if (t) d.conferir.forEach(c => t.m.notas.push('Conferir documento de ' + t.label + ': ' + c)); }
+  }
   deriveA(); deriveB(); deriveC(); deriveD();
 }
 
