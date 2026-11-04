@@ -1,0 +1,82 @@
+{
+ "mat-2010110315": {
+  "fields": {
+   "_cep69": false,
+   "cidade": "Palhoça",
+   "estadoCivil": "Casado(a)",
+   "funcao": "Pastor",
+   "funcaoLocal": "Presidente Igreja Local",
+   "grau": "Ministro Ordenado",
+   "inclusao": "2010-11-01",
+   "jurisdicao": "Santa Catarina",
+   "matricula": "2010.11.0315",
+   "nacionalidade": "Brasileira",
+   "nome": "Walcione Dias Goes",
+   "sexo": "Masculino",
+   "uf": "SC"
+  },
+  "kind": "pessoa",
+  "nome": "Walcione Dias Goes",
+  "updatedAt": "2026-11-04T03:45:38.716Z"
+ },
+ "mat-2012110374": {
+  "fields": {
+   "_cep69": false,
+   "cidade": "Joinville",
+   "estadoCivil": "Casado(a)",
+   "funcao": "Pastora",
+   "funcaoLocal": "Pastor(a) Auxiliar",
+   "grau": "Ministro Ordenado",
+   "inclusao": "2012-12-31",
+   "jurisdicao": "Estado do Amazonas",
+   "matricula": "2012.11.0374",
+   "nacionalidade": "Brasileira",
+   "nome": "Danielle Jefferson Soares",
+   "sexo": "Feminino",
+   "uf": "SC"
+  },
+  "kind": "pessoa",
+  "nome": "Danielle Jefferson Soares",
+  "updatedAt": "2026-11-04T03:45:50.532Z"
+ },
+ "mat-2012110376": {
+  "fields": {
+   "_cep69": false,
+   "cidade": "Joinville",
+   "estadoCivil": "Casado(a)",
+   "funcao": "Pastor",
+   "funcaoLocal": "Presidente Igreja Local",
+   "grau": "Ministro Ordenado",
+   "inclusao": "2012-12-31",
+   "jurisdicao": "Estado do Amazonas",
+   "matricula": "2012.11.0376",
+   "nacionalidade": "Brasileira",
+   "nome": "Michael Lopes Soares",
+   "sexo": "Masculino",
+   "uf": "SC"
+  },
+  "kind": "pessoa",
+  "nome": "Michael Lopes Soares",
+  "updatedAt": "2026-11-04T04:00:00.000Z"
+ },
+ "mat-2014010472": {
+  "fields": {
+   "_cep69": false,
+   "cidade": "Palhoça",
+   "estadoCivil": "Casado(a)",
+   "funcao": "Pastora",
+   "funcaoLocal": "Pastor(a) Auxiliar",
+   "grau": "Ministro Ordenado",
+   "inclusao": "2010-11-01",
+   "jurisdicao": "Santa Catarina",
+   "matricula": "2014.01.0472",
+   "nacionalidade": "Brasileira",
+   "nome": "Giselle Marques Goes",
+   "sexo": "Feminino",
+   "uf": "SC"
+  },
+  "kind": "pessoa",
+  "nome": "Giselle Marques Goes",
+  "updatedAt": "2026-11-04T03:45:29.118Z"
+ }
+}
