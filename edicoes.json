@@ -86,26 +86,43 @@
  "nome-natally-monteiro-fonseca-barbosa": {
   "conferir": [],
   "fields": {
+   "_cep69": false,
    "cidade": "Letícia",
    "estadoCivil": "Casado(a)",
+   "funcao": "",
+   "funcaoLocal": "",
+   "grau": "Ministro Auxiliar",
+   "inclusao": "2026-11-04",
+   "jurisdicao": "",
+   "matricula": "",
    "nacionalidade": "Brasileira",
+   "nome": "Natally Monteiro Fonseca Barbosa",
+   "sexo": "Feminino",
    "uf": "Colômbia"
   },
   "kind": "pessoa",
   "nome": "Natally Monteiro Fonseca Barbosa",
-  "updatedAt": "2026-11-05T00:40:00Z"
+  "updatedAt": "2026-11-05T00:38:39.188Z"
  },
  "nome-raiso-de-lima-barbosa": {
   "conferir": [],
   "fields": {
+   "_cep69": false,
    "cidade": "Letícia",
-   "conjuge": "Natally Monteiro Fonseca Barbosa",
    "estadoCivil": "Casado(a)",
+   "funcao": "",
+   "funcaoLocal": "",
+   "grau": "Ministro Auxiliar",
+   "inclusao": "2026-11-04",
+   "jurisdicao": "",
+   "matricula": "",
    "nacionalidade": "Brasileira",
+   "nome": "Raiso de Lima Barbosa",
+   "sexo": "Masculino",
    "uf": "Colômbia"
   },
   "kind": "pessoa",
   "nome": "Raiso de Lima Barbosa",
-  "updatedAt": "2026-11-05T00:40:00Z"
+  "updatedAt": "2026-11-05T00:38:07.151Z"
  }
 }
