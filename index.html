@@ -389,7 +389,7 @@ const REPORTS = {
   'grau': { t:'Grau Ministerial', d:'Quantidade de pastores e missionários em cada grau ministerial. Quem não tem grau preenchido conta como Ministro Auxiliar.', icon:'card', html:quadroGrau, cols:[], rows:()=>[] },
   'cadastro': { t:'Conferência com Cadastro Nacional', d:'Quem respondeu o relatório 2026.1 comparado com o Banco de Dados Nacional.', icon:'alert',
     cols:[['nome','Nome',0,r=>`<a href="${r.href}">${esc(r.nome)}</a>`],['sit','Situação',0,r=>pill(r.sit,r.k)],['igreja','Igreja'],['obs','Observação',0,r=>`<span class="muted" style="white-space:normal;display:block;min-width:260px">${esc(r.obs)}</span>`]],
-    rows:()=>[...DATA.map(m=>({nome:m.nome,href:'#m-'+m.id,igreja:m.igreja,sit:m.nac?'Nos dois cadastros':'Sem Cadastro Nacional',k:m.nac?'ok':'bad',obs:m.nac?pendList(m).filter(n=>/adastro/.test(n)).join('; '):'Pedir cadastro no Banco de Dados Nacional'})),
+    rows:()=>[...DATA.map(m=>({nome:m.nome,href:'#m-'+m.id,igreja:m.igreja,sit:m.nac&&m.nac.matricula?'Nos dois cadastros':'Sem Cadastro Nacional',k:m.nac&&m.nac.matricula?'ok':'bad',obs:m.nac&&m.nac.matricula?pendList(m).filter(n=>/adastro/.test(n)).join('; '):'Pedir cadastro no Banco de Dados Nacional'})),
       ...AUXL.flatMap(a=>[[a,''],...(a.conjRec?[[a.conjRec,'c']]:[])].map(([x,s])=>({nome:x.nome,href:`#a-${a.hostM.id}-${a.idx}${s}`,igreja:a.hostM.igreja,sit:x.matricula?'Auxiliar com cadastro':'Auxiliar sem cadastro',k:x.matricula?'info':'bad',obs:'Auxiliar de '+a.hostM.nome}))),
       ...EXTRA.map(e=>({nome:e.nome,href:'#'+e.id,igreja:e.igrejaCad||e.cidade,sit:e.hist?'Registro antigo':'Só no Cadastro Nacional',k:e.hist?'mute':'warn',obs:e.dica||'Não respondeu o relatório 2026.1'}))], sort:['sit',-1] },
   'imoveis': { t:'Situação dos Imóveis', d:'Templos próprios e alugados, com obras em andamento e terrenos adquiridos.', icon:'build',
@@ -722,7 +722,7 @@ function applyOne(key, f){
     m._editado = 1; return;
   }
   let r = t.r;
-  if (!r && t.role === 'titular') { r = t.m.nac = { fonte:'Editado na Secretaria' }; }
+  if (!r && t.role === 'titular') { r = t.m.nac = { fonte:'Dados da Secretaria (sem cadastro no Banco Nacional)', nome:t.m.nome, matricula:'' }; }
   for (const [k,v] of Object.entries(f)) r[k] = (k === 'nasc' || k === 'inclusao') && !v ? null : v;
   r._editado = 1;
   if (t.role === 'titular') {
