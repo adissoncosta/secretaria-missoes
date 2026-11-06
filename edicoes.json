@@ -83,6 +83,20 @@
   "nome": "Giselle Marques Goes",
   "updatedAt": "2026-11-04T03:45:29.118Z"
  },
+ "nome-gleyson-rodrigo-aguiar-santos": {
+  "conferir": [],
+  "fields": {
+   "_cep69": false,
+   "cidade": "Criciúma",
+   "conjuge": "Isaedh Suellen Siqueira Aguiar",
+   "estadoCivil": "Casado(a)",
+   "nacionalidade": "Brasileira",
+   "uf": "SC"
+  },
+  "kind": "pessoa",
+  "nome": "Gleyson Rodrigo Aguiar Santos",
+  "updatedAt": "2026-11-06T12:40:00Z"
+ },
  "nome-natally-monteiro-fonseca-barbosa": {
   "conferir": [],
   "fields": {
